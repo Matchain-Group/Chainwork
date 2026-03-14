@@ -1,0 +1,2245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChainWork — Web3 & Tech Job Board</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a0f1e;
+    --navy2: #0d1530;
+    --navy3: #111d40;
+    --navy4: #1a2755;
+    --purple: #7c3aed;
+    --purple2: #6d28d9;
+    --purple3: #9f67ff;
+    --purple-glow: rgba(124,58,237,0.15);
+    --electric: #a78bfa;
+    --electric2: #c4b5fd;
+    --white: #ffffff;
+    --gray: #94a3b8;
+    --gray2: #64748b;
+    --gray3: #334155;
+    --surface: rgba(255,255,255,0.04);
+    --surface2: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(124,58,237,0.3);
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --r: 10px;
+    --r2: 16px;
+    --r3: 24px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--font-body);
+    background:var(--navy);
+    color:var(--white);
+    min-height:100vh;
+    overflow-x:hidden;
+    line-height:1.6;
+  }
+  /* SCROLLBAR */
+  ::-webkit-scrollbar{width:6px}
+  ::-webkit-scrollbar-track{background:var(--navy2)}
+  ::-webkit-scrollbar-thumb{background:var(--purple);border-radius:3px}
+
+  /* NAV */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:1000;
+    background:rgba(10,15,30,0.85);
+    backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border);
+    padding:0 2rem;
+    height:64px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .logo{
+    font-family:var(--font-head);
+    font-size:1.4rem;font-weight:800;
+    background:linear-gradient(135deg,#fff 30%,var(--electric));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    display:flex;align-items:center;gap:8px;cursor:pointer;
+  }
+  .logo-icon{
+    width:32px;height:32px;
+    background:linear-gradient(135deg,var(--purple),var(--electric));
+    border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;-webkit-text-fill-color:white;
+  }
+  .nav-links{display:flex;align-items:center;gap:0.5rem}
+  .nav-links a{
+    color:var(--gray);
+    text-decoration:none;
+    font-size:0.875rem;font-weight:500;
+    padding:6px 14px;border-radius:8px;
+    transition:all 0.2s;
+  }
+  .nav-links a:hover,.nav-links a.active{color:var(--white);background:var(--surface2)}
+  .nav-right{display:flex;align-items:center;gap:10px}
+  .btn{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:8px 18px;border-radius:var(--r);
+    font-family:var(--font-body);font-size:0.875rem;font-weight:500;
+    cursor:pointer;border:none;transition:all 0.2s;text-decoration:none;
+  }
+  .btn-ghost{background:var(--surface);color:var(--gray);border:1px solid var(--border)}
+  .btn-ghost:hover{color:var(--white);border-color:var(--border2)}
+  .btn-primary{background:var(--purple);color:white}
+  .btn-primary:hover{background:var(--purple2);transform:translateY(-1px)}
+  .btn-outline{background:transparent;color:var(--electric);border:1px solid var(--border2)}
+  .btn-outline:hover{background:var(--purple-glow)}
+  .btn-sm{padding:5px 12px;font-size:0.8rem}
+  .btn-lg{padding:12px 28px;font-size:1rem}
+  .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+  .hamburger span{width:22px;height:2px;background:var(--gray);border-radius:2px;transition:all 0.3s}
+
+  /* PAGES */
+  .page{display:none;min-height:100vh;padding-top:64px}
+  .page.active{display:block}
+
+  /* HERO */
+  .hero{
+    min-height:calc(100vh - 64px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:4rem 2rem;
+    position:relative;overflow:hidden;
+  }
+  .hero-bg{
+    position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(ellipse 800px 600px at 50% 0%,rgba(124,58,237,0.12) 0%,transparent 70%),
+      radial-gradient(ellipse 400px 400px at 20% 60%,rgba(99,102,241,0.08) 0%,transparent 60%),
+      radial-gradient(ellipse 300px 300px at 80% 40%,rgba(167,139,250,0.06) 0%,transparent 60%);
+  }
+  .hero-grid{
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);
+    background-size:60px 60px;
+    mask-image:radial-gradient(ellipse 100% 100% at 50% 0%,black 40%,transparent 100%);
+  }
+  .hero-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(124,58,237,0.15);
+    border:1px solid rgba(124,58,237,0.3);
+    border-radius:100px;padding:6px 16px;
+    font-size:0.8rem;font-weight:500;color:var(--electric2);
+    margin-bottom:1.5rem;
+  }
+  .hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(1.3)}}
+  .hero h1{
+    font-family:var(--font-head);
+    font-size:clamp(2.5rem,6vw,4.5rem);
+    font-weight:800;
+    line-height:1.1;
+    margin-bottom:1.5rem;
+    letter-spacing:-0.02em;
+  }
+  .hero h1 .gradient{
+    background:linear-gradient(135deg,var(--electric2) 0%,var(--purple3) 50%,#60a5fa 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .hero p{
+    font-size:1.125rem;color:var(--gray);
+    max-width:600px;margin:0 auto 2.5rem;
+    line-height:1.7;
+  }
+  .hero-search{
+    width:100%;max-width:680px;
+    background:var(--navy2);
+    border:1px solid var(--border);
+    border-radius:var(--r2);
+    padding:8px 8px 8px 20px;
+    display:flex;align-items:center;gap:10px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.4),0 0 0 1px var(--border);
+    margin-bottom:1rem;
+    position:relative;
+  }
+  .hero-search:focus-within{border-color:var(--border2);box-shadow:0 20px 60px rgba(0,0,0,0.4),0 0 0 1px rgba(124,58,237,0.3)}
+  .hero-search input{
+    flex:1;background:transparent;border:none;outline:none;
+    font-family:var(--font-body);font-size:1rem;color:var(--white);
+  }
+  .hero-search input::placeholder{color:var(--gray2)}
+  .hero-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:1.5rem}
+  .hero-tag{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:100px;padding:4px 14px;font-size:0.8rem;color:var(--gray);
+    cursor:pointer;transition:all 0.2s;
+  }
+  .hero-tag:hover{color:var(--electric2);border-color:var(--border2)}
+
+  /* STATS */
+  .stats-bar{
+    background:var(--navy2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+    padding:1.5rem 2rem;
+    display:flex;justify-content:center;gap:4rem;flex-wrap:wrap;
+  }
+  .stat-item{text-align:center}
+  .stat-num{font-family:var(--font-head);font-size:1.8rem;font-weight:800;color:var(--electric2)}
+  .stat-label{font-size:0.8rem;color:var(--gray);margin-top:2px}
+
+  /* SECTIONS */
+  section{padding:5rem 2rem}
+  .container{max-width:1200px;margin:0 auto}
+  .section-head{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:2.5rem;
+  }
+  .section-title{
+    font-family:var(--font-head);font-size:1.75rem;font-weight:700;
+  }
+  .section-sub{font-size:0.875rem;color:var(--gray);margin-top:4px}
+
+  /* JOB CARDS */
+  .jobs-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+    gap:1rem;
+  }
+  .job-card{
+    background:var(--navy2);
+    border:1px solid var(--border);
+    border-radius:var(--r2);
+    padding:1.25rem 1.5rem;
+    transition:all 0.25s;
+    cursor:pointer;
+    position:relative;overflow:hidden;
+  }
+  .job-card::before{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(135deg,rgba(124,58,237,0.06),transparent);
+    opacity:0;transition:opacity 0.3s;
+  }
+  .job-card:hover{border-color:rgba(124,58,237,0.35);transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,0.3)}
+  .job-card:hover::before{opacity:1}
+  .job-card.featured{border-color:rgba(124,58,237,0.4);background:linear-gradient(135deg,rgba(124,58,237,0.08),var(--navy2))}
+  .card-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:1rem}
+  .company-logo{
+    width:44px;height:44px;border-radius:10px;
+    background:linear-gradient(135deg,var(--purple),var(--electric));
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-head);font-size:1rem;font-weight:800;
+    flex-shrink:0;
+    border:1px solid var(--border);
+  }
+  .card-meta{flex:1}
+  .card-title{font-family:var(--font-head);font-size:1rem;font-weight:600;margin-bottom:3px;color:var(--white)}
+  .card-company{font-size:0.85rem;color:var(--gray)}
+  .card-badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+  .badge{
+    display:inline-flex;align-items:center;gap:4px;
+    padding:3px 10px;border-radius:100px;font-size:0.75rem;font-weight:500;
+  }
+  .badge-purple{background:rgba(124,58,237,0.15);color:var(--electric2);border:1px solid rgba(124,58,237,0.25)}
+  .badge-green{background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.25)}
+  .badge-blue{background:rgba(59,130,246,0.15);color:#93c5fd;border:1px solid rgba(59,130,246,0.25)}
+  .badge-orange{background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.25)}
+  .badge-red{background:rgba(239,68,68,0.15);color:#fca5a5;border:1px solid rgba(239,68,68,0.25)}
+  .badge-new{background:rgba(16,185,129,0.2);color:#34d399}
+  .badge-hot{background:rgba(239,68,68,0.2);color:#f87171}
+  .badge-featured{background:rgba(124,58,237,0.2);color:var(--electric2)}
+  .card-footer{display:flex;align-items:center;justify-content:space-between}
+  .card-salary{font-family:var(--font-head);font-size:0.95rem;font-weight:600;color:var(--electric2)}
+  .card-date{font-size:0.78rem;color:var(--gray2)}
+  .bookmark-btn{
+    width:32px;height:32px;border-radius:8px;
+    background:var(--surface);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:all 0.2s;color:var(--gray);font-size:14px;
+  }
+  .bookmark-btn:hover,.bookmark-btn.saved{color:var(--electric2);border-color:var(--border2);background:var(--purple-glow)}
+
+  /* CATEGORIES */
+  .categories-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:1rem;
+  }
+  .cat-card{
+    background:var(--navy2);border:1px solid var(--border);border-radius:var(--r2);
+    padding:1.25rem;cursor:pointer;transition:all 0.2s;
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .cat-card:hover{border-color:var(--border2);background:rgba(124,58,237,0.08)}
+  .cat-icon{font-size:1.5rem}
+  .cat-name{font-family:var(--font-head);font-size:0.9rem;font-weight:600}
+  .cat-count{font-size:0.8rem;color:var(--gray)}
+
+  /* JOBS PAGE */
+  .jobs-page-layout{
+    display:grid;grid-template-columns:280px 1fr;gap:2rem;
+    max-width:1200px;margin:0 auto;padding:2rem;
+  }
+  .filters-panel{
+    background:var(--navy2);border:1px solid var(--border);border-radius:var(--r2);
+    padding:1.25rem;height:fit-content;position:sticky;top:80px;
+  }
+  .filter-group{margin-bottom:1.5rem}
+  .filter-label{font-size:0.8rem;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px}
+  .filter-opts{display:flex;flex-direction:column;gap:6px}
+  .filter-opt{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.875rem;color:var(--gray);transition:color 0.2s;padding:4px 0}
+  .filter-opt:hover{color:var(--white)}
+  .filter-opt input[type=checkbox]{accent-color:var(--purple);width:14px;height:14px;cursor:pointer}
+  .filter-opt input[type=checkbox]:checked + span{color:var(--white)}
+  .filter-search{
+    width:100%;background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--r);padding:8px 12px;
+    font-family:var(--font-body);font-size:0.875rem;color:var(--white);outline:none;
+  }
+  .filter-search:focus{border-color:var(--border2)}
+  .filter-search::placeholder{color:var(--gray2)}
+  .jobs-main{}
+  .jobs-toolbar{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:1.25rem;flex-wrap:wrap;gap:10px;
+  }
+  .jobs-count{font-size:0.875rem;color:var(--gray)}
+  .jobs-count strong{color:var(--white);font-weight:600}
+  .sort-select{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--r);padding:7px 12px;
+    font-family:var(--font-body);font-size:0.875rem;color:var(--gray);outline:none;cursor:pointer;
+  }
+  .sort-select:focus{border-color:var(--border2)}
+  .pagination{display:flex;align-items:center;gap:6px;justify-content:center;margin-top:2rem}
+  .page-btn{
+    width:36px;height:36px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--surface);border:1px solid var(--border);
+    font-size:0.875rem;color:var(--gray);cursor:pointer;transition:all 0.2s;
+  }
+  .page-btn:hover,.page-btn.active{background:var(--purple);color:white;border-color:var(--purple)}
+
+  /* JOB DETAIL */
+  .job-detail-layout{
+    max-width:900px;margin:0 auto;padding:2rem;
+  }
+  .job-detail-header{
+    background:var(--navy2);border:1px solid var(--border);border-radius:var(--r2);
+    padding:2rem;margin-bottom:1.5rem;
+  }
+  .job-detail-top{display:flex;gap:1.5rem;align-items:flex-start;margin-bottom:1.5rem}
+  .company-logo-lg{
+    width:72px;height:72px;border-radius:16px;
+    background:linear-gradient(135deg,var(--purple),var(--electric));
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-head);font-size:1.5rem;font-weight:800;
+    border:1px solid var(--border);flex-shrink:0;
+  }
+  .job-detail-info h1{font-family:var(--font-head);font-size:1.75rem;font-weight:700;margin-bottom:6px}
+  .job-detail-info .company-name{font-size:1rem;color:var(--gray);display:flex;align-items:center;gap:6px}
+  .verified{color:var(--purple3);font-size:14px}
+  .job-detail-meta{display:flex;flex-wrap:wrap;gap:1.5rem}
+  .meta-item{display:flex;align-items:center;gap:6px;font-size:0.875rem;color:var(--gray)}
+  .meta-item svg{color:var(--purple3)}
+  .job-detail-body{background:var(--navy2);border:1px solid var(--border);border-radius:var(--r2);padding:2rem;margin-bottom:1.5rem}
+  .job-section{margin-bottom:2rem}
+  .job-section h3{font-family:var(--font-head);font-size:1.1rem;font-weight:600;margin-bottom:1rem;color:var(--electric2)}
+  .job-section p{color:var(--gray);line-height:1.8;font-size:0.9375rem}
+  .job-section ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+  .job-section ul li{display:flex;align-items:flex-start;gap:8px;color:var(--gray);font-size:0.9375rem}
+  .job-section ul li::before{content:'→';color:var(--purple3);flex-shrink:0}
+  .apply-sticky{
+    position:sticky;bottom:20px;
+    background:linear-gradient(135deg,var(--navy3),var(--navy4));
+    border:1px solid var(--border2);border-radius:var(--r2);
+    padding:1.25rem 1.5rem;
+    display:flex;align-items:center;justify-content:space-between;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+    flex-wrap:wrap;gap:12px;
+  }
+
+  /* APPLY FORM */
+  .form-page{max-width:700px;margin:0 auto;padding:2rem}
+  .form-card{background:var(--navy2);border:1px solid var(--border);border-radius:var(--r2);padding:2rem}
+  .form-title{font-family:var(--font-head);font-size:1.5rem;font-weight:700;margin-bottom:0.5rem}
+  .form-sub{font-size:0.875rem;color:var(--gray);margin-bottom:2rem}
+  .form-group{margin-bottom:1.25rem}
+  .form-group label{display:block;font-size:0.8rem;font-weight:500;color:var(--gray);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.03em}
+  .form-input,.form-textarea,.form-select{
+    width:100%;background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--r);padding:10px 14px;
+    font-family:var(--font-body);font-size:0.9375rem;color:var(--white);outline:none;
+    transition:border-color 0.2s;
+  }
+  .form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--border2)}
+  .form-input::placeholder,.form-textarea::placeholder{color:var(--gray2)}
+  .form-textarea{resize:vertical;min-height:120px}
+  .form-select option{background:var(--navy2);color:var(--white)}
+  .upload-zone{
+    border:2px dashed var(--border);border-radius:var(--r2);padding:2rem;
+    text-align:center;cursor:pointer;transition:all 0.2s;
+  }
+  .upload-zone:hover{border-color:var(--border2);background:var(--purple-glow)}
+  .upload-icon{font-size:2rem;margin-bottom:8px;opacity:0.6}
+  .upload-text{font-size:0.875rem;color:var(--gray)}
+  .upload-hint{font-size:0.78rem;color:var(--gray2);margin-top:4px}
+  .skills-input{display:flex;flex-wrap:wrap;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:8px}
+  .skill-tag{background:rgba(124,58,237,0.2);color:var(--electric2);border-radius:100px;padding:3px 10px;font-size:0.8rem;display:flex;align-items:center;gap:4px}
+  .skill-tag-x{cursor:pointer;opacity:0.7}
+  .skill-tag-x:hover{opacity:1}
+
+  /* MODALS */
+  .modal-overlay{
+    position:fixed;inset:0;z-index:2000;
+    background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);
+    display:flex;align-items:center;justify-content:center;padding:1rem;
+    opacity:0;pointer-events:none;transition:opacity 0.25s;
+  }
+  .modal-overlay.open{opacity:1;pointer-events:all}
+  .modal{
+    background:var(--navy2);border:1px solid var(--border);border-radius:var(--r3);
+    padding:2rem;width:100%;max-width:440px;
+    transform:scale(0.95);transition:transform 0.25s;
+  }
+  .modal-overlay.open .modal{transform:scale(1)}
+  .modal-close{
+    position:absolute;top:1rem;right:1rem;
+    background:var(--surface);border:1px solid var(--border);border-radius:50%;
+    width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;font-size:18px;color:var(--gray);transition:all 0.2s;
+  }
+  .modal-close:hover{color:var(--white);border-color:var(--border2)}
+  .modal-title{font-family:var(--font-head);font-size:1.4rem;font-weight:700;margin-bottom:0.5rem}
+  .modal-sub{font-size:0.875rem;color:var(--gray);margin-bottom:1.5rem}
+  .otp-inputs{display:flex;gap:10px;justify-content:center;margin-bottom:1.5rem}
+  .otp-input{
+    width:50px;height:56px;text-align:center;
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+    font-family:var(--font-head);font-size:1.5rem;font-weight:700;color:var(--white);outline:none;
+    transition:border-color 0.2s;
+  }
+  .otp-input:focus{border-color:var(--border2)}
+  .divider{display:flex;align-items:center;gap:12px;margin:1rem 0;color:var(--gray);font-size:0.8rem}
+  .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+  .social-btn{
+    width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
+    padding:10px;border-radius:var(--r);border:1px solid var(--border);
+    background:var(--surface);color:var(--gray);font-family:var(--font-body);
+    font-size:0.875rem;cursor:pointer;transition:all 0.2s;
+  }
+  .social-btn:hover{color:var(--white);border-color:var(--border2)}
+  .tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:var(--r);padding:3px;margin-bottom:1.5rem}
+  .tab{
+    flex:1;padding:8px;text-align:center;font-size:0.875rem;font-weight:500;
+    border-radius:7px;cursor:pointer;transition:all 0.2s;color:var(--gray);
+  }
+  .tab.active{background:var(--purple);color:white}
+
+  /* DASHBOARD */
+  .dash-layout{
+    display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 64px);
+  }
+  .dash-sidebar{
+    background:var(--navy2);border-right:1px solid var(--border);
+    padding:1.5rem 1rem;
+    position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;
+  }
+  .dash-nav{display:flex;flex-direction:column;gap:2px}
+  .dash-nav-item{
+    display:flex;align-items:center;gap:10px;
+    padding:9px 12px;border-radius:var(--r);
+    font-size:0.875rem;font-weight:500;color:var(--gray);
+    cursor:pointer;transition:all 0.2s;
+  }
+  .dash-nav-item:hover,.dash-nav-item.active{color:var(--white);background:var(--surface2)}
+  .dash-nav-item.active{color:var(--electric2);background:var(--purple-glow)}
+  .dash-nav-icon{font-size:15px;width:18px;text-align:center}
+  .dash-content{padding:2rem;flex:1;overflow-y:auto}
+  .dash-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+  .dash-title{font-family:var(--font-head);font-size:1.5rem;font-weight:700}
+  .dash-sub{font-size:0.875rem;color:var(--gray);margin-top:4px}
+  .metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:2rem}
+  .metric-card{
+    background:var(--navy2);border:1px solid var(--border);border-radius:var(--r2);padding:1.25rem;
+  }
+  .metric-label{font-size:0.8rem;color:var(--gray);margin-bottom:8px}
+  .metric-value{font-family:var(--font-head);font-size:2rem;font-weight:800;color:var(--white)}
+  .metric-change{font-size:0.8rem;margin-top:4px}
+  .metric-change.up{color:var(--success)}
+  .metric-change.down{color:var(--danger)}
+  .table-card{background:var(--navy2);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+  .table-header{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+  .table-title{font-family:var(--font-head);font-size:1rem;font-weight:600}
+  table{width:100%;border-collapse:collapse}
+  th{padding:10px 16px;text-align:left;font-size:0.78rem;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:0.04em;border-bottom:1px solid var(--border)}
+  td{padding:12px 16px;font-size:0.875rem;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--gray)}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:var(--surface)}
+  .status-badge{
+    display:inline-flex;align-items:center;gap:4px;
+    padding:3px 10px;border-radius:100px;font-size:0.75rem;font-weight:500;
+  }
+  .status-applied{background:rgba(59,130,246,0.15);color:#93c5fd}
+  .status-reviewing{background:rgba(245,158,11,0.15);color:#fcd34d}
+  .status-shortlisted{background:rgba(124,58,237,0.15);color:var(--electric2)}
+  .status-hired{background:rgba(16,185,129,0.15);color:#6ee7b7}
+  .status-rejected{background:rgba(239,68,68,0.15);color:#fca5a5}
+
+  /* PRICING */
+  .pricing-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;
+    max-width:1100px;margin:0 auto;padding:2rem;
+  }
+  .pricing-card{
+    background:var(--navy2);border:1px solid var(--border);border-radius:var(--r2);
+    padding:2rem;transition:all 0.25s;
+  }
+  .pricing-card.popular{
+    border-color:rgba(124,58,237,0.5);
+    background:linear-gradient(160deg,rgba(124,58,237,0.12),var(--navy2));
+    position:relative;
+  }
+  .popular-badge{
+    position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+    background:var(--purple);color:white;border-radius:100px;
+    padding:3px 14px;font-size:0.75rem;font-weight:600;white-space:nowrap;
+  }
+  .pricing-name{font-family:var(--font-head);font-size:1.1rem;font-weight:700;margin-bottom:0.5rem}
+  .pricing-desc{font-size:0.85rem;color:var(--gray);margin-bottom:1.5rem}
+  .pricing-price{margin-bottom:1.5rem}
+  .price-amount{font-family:var(--font-head);font-size:2.5rem;font-weight:800;color:var(--white)}
+  .price-period{font-size:0.875rem;color:var(--gray)}
+  .pricing-features{display:flex;flex-direction:column;gap:10px;margin-bottom:2rem}
+  .pricing-feature{display:flex;align-items:center;gap:8px;font-size:0.875rem;color:var(--gray)}
+  .pricing-feature .check{color:var(--success);font-size:14px}
+  .pricing-feature .cross{color:var(--gray2);font-size:14px}
+
+  /* ADMIN */
+  .admin-page{max-width:1200px;margin:0 auto;padding:2rem}
+  .admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:2rem}
+  .admin-stat{
+    background:var(--navy2);border:1px solid var(--border);border-radius:var(--r2);padding:1.25rem;
+  }
+  .admin-stat-icon{font-size:1.5rem;margin-bottom:8px}
+  .admin-stat-value{font-family:var(--font-head);font-size:1.75rem;font-weight:800}
+  .admin-stat-label{font-size:0.8rem;color:var(--gray);margin-top:4px}
+  .admin-tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
+  .admin-tab{
+    padding:10px 18px;font-size:0.875rem;font-weight:500;cursor:pointer;
+    color:var(--gray);border-bottom:2px solid transparent;transition:all 0.2s;
+  }
+  .admin-tab.active{color:var(--electric2);border-color:var(--purple)}
+
+  /* TOAST */
+  .toast-container{position:fixed;bottom:24px;right:24px;z-index:5000;display:flex;flex-direction:column;gap:8px}
+  .toast{
+    background:var(--navy3);border:1px solid var(--border);border-radius:var(--r);
+    padding:12px 16px;min-width:280px;
+    display:flex;align-items:center;gap:10px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.4);
+    animation:slideIn 0.3s ease;
+  }
+  .toast.success{border-color:rgba(16,185,129,0.3)}
+  .toast.error{border-color:rgba(239,68,68,0.3)}
+  .toast.info{border-color:rgba(124,58,237,0.3)}
+  .toast-icon{font-size:1rem}
+  .toast-msg{font-size:0.875rem;color:var(--white);flex:1}
+  @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+  @keyframes fadeOut{to{opacity:0;transform:translateX(100%)}}
+
+  /* FOOTER */
+  footer{
+    background:var(--navy2);border-top:1px solid var(--border);
+    padding:3rem 2rem 2rem;
+  }
+  .footer-grid{
+    display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;max-width:1200px;margin:0 auto;
+  }
+  .footer-brand .logo{font-size:1.2rem;margin-bottom:1rem}
+  .footer-desc{font-size:0.875rem;color:var(--gray);line-height:1.7;margin-bottom:1.25rem}
+  .footer-title{font-family:var(--font-head);font-size:0.875rem;font-weight:700;color:var(--white);margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.05em}
+  .footer-links{display:flex;flex-direction:column;gap:8px}
+  .footer-link{font-size:0.875rem;color:var(--gray);text-decoration:none;transition:color 0.2s;cursor:pointer}
+  .footer-link:hover{color:var(--electric2)}
+  .footer-bottom{
+    border-top:1px solid var(--border);padding-top:1.5rem;margin-top:2rem;
+    max-width:1200px;margin-left:auto;margin-right:auto;
+    display:flex;align-items:center;justify-content:space-between;
+    font-size:0.8rem;color:var(--gray);flex-wrap:wrap;gap:8px;
+  }
+  .social-links{display:flex;gap:8px}
+  .social-link{
+    width:32px;height:32px;border-radius:8px;
+    background:var(--surface);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:all 0.2s;color:var(--gray);font-size:14px;
+    text-decoration:none;
+  }
+  .social-link:hover{color:var(--electric2);border-color:var(--border2)}
+
+  /* SKELETON */
+  .skeleton{
+    background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);
+    background-size:200% 100%;
+    animation:shimmer 1.5s infinite;border-radius:6px;
+  }
+  @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+  /* PROFILE SECTION */
+  .profile-header{
+    background:linear-gradient(135deg,var(--navy3),var(--navy4));
+    border:1px solid var(--border);border-radius:var(--r2);
+    padding:2rem;margin-bottom:1.5rem;
+    display:flex;align-items:flex-start;gap:1.5rem;
+  }
+  .avatar{
+    width:80px;height:80px;border-radius:50%;
+    background:linear-gradient(135deg,var(--purple),var(--electric));
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-head);font-size:2rem;font-weight:800;
+    border:3px solid var(--border2);flex-shrink:0;
+  }
+  .profile-info h2{font-family:var(--font-head);font-size:1.3rem;font-weight:700}
+  .profile-info p{font-size:0.875rem;color:var(--gray);margin-top:4px}
+  .profile-badges{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+
+  /* NOTIFICATIONS */
+  .notif-dot{
+    width:8px;height:8px;border-radius:50%;background:var(--danger);
+    position:absolute;top:6px;right:6px;
+  }
+
+  /* RESPONSIVE */
+  @media(max-width:900px){
+    .footer-grid{grid-template-columns:1fr 1fr;gap:2rem}
+    .jobs-page-layout{grid-template-columns:1fr}
+    .filters-panel{position:static}
+    .dash-layout{grid-template-columns:1fr}
+    .dash-sidebar{position:static;height:auto;display:flex;gap:4px;flex-wrap:wrap;padding:1rem}
+    .dash-nav{flex-direction:row;flex-wrap:wrap}
+    .dash-nav-item span{display:none}
+  }
+  @media(max-width:640px){
+    nav{padding:0 1rem}
+    .nav-links,.nav-right .btn:not(.btn-primary){display:none}
+    .hamburger{display:flex}
+    .hero{padding:3rem 1rem}
+    .stats-bar{gap:2rem}
+    .jobs-grid{grid-template-columns:1fr}
+    .categories-grid{grid-template-columns:repeat(2,1fr)}
+    .pricing-grid{grid-template-columns:1fr}
+    .footer-grid{grid-template-columns:1fr}
+    .footer-grid>div:not(:first-child){display:none}
+    .jobs-page-layout{padding:1rem}
+  }
+
+  /* MISC */
+  .pill{display:inline-block;padding:2px 10px;border-radius:100px;font-size:0.75rem;font-weight:500}
+  .text-purple{color:var(--electric2)}
+  .text-gray{color:var(--gray)}
+  .text-success{color:var(--success)}
+  .flex{display:flex}
+  .items-center{align-items:center}
+  .gap-2{gap:8px}
+  .gap-3{gap:12px}
+  .mb-1{margin-bottom:0.5rem}
+  .mb-2{margin-bottom:1rem}
+  .mb-3{margin-bottom:1.5rem}
+  .mt-2{margin-top:1rem}
+  .mt-3{margin-top:1.5rem}
+  .w-full{width:100%}
+  hr.divider-line{border:none;border-top:1px solid var(--border);margin:1.5rem 0}
+  .empty-state{text-align:center;padding:4rem 2rem;color:var(--gray)}
+  .empty-icon{font-size:3rem;margin-bottom:1rem;opacity:0.4}
+  .empty-title{font-family:var(--font-head);font-size:1.1rem;font-weight:600;color:var(--white);margin-bottom:0.5rem}
+  .empty-sub{font-size:0.875rem}
+  .tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+
+  /* MOBILE NAV */
+  .mobile-menu{
+    position:fixed;inset:0;z-index:999;
+    background:var(--navy);
+    padding:2rem;
+    display:flex;flex-direction:column;gap:1rem;
+    transform:translateX(100%);transition:transform 0.3s;
+    padding-top:80px;
+  }
+  .mobile-menu.open{transform:translateX(0)}
+  .mobile-nav-link{
+    font-family:var(--font-head);font-size:1.25rem;font-weight:600;
+    color:var(--gray);text-decoration:none;cursor:pointer;
+    padding:10px 0;border-bottom:1px solid var(--border);
+    display:block;
+  }
+  .mobile-nav-link:hover{color:var(--white)}
+
+  /* PROGRESS BAR */
+  .progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:6px}
+  .progress-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--purple),var(--electric))}
+
+  /* COMPANY PROFILE CARD */
+  .company-profile-mini{
+    background:var(--navy2);border:1px solid var(--border);border-radius:var(--r2);
+    padding:1.5rem;
+  }
+  .company-profile-mini h3{font-family:var(--font-head);font-size:1.1rem;font-weight:700;margin-bottom:0.5rem}
+
+  /* SOURCE BADGE */
+  .source-badge{
+    position:absolute;bottom:12px;right:12px;
+    font-size:0.7rem;color:var(--gray2);
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:100px;padding:2px 8px;
+  }
+
+  /* ACTION BAR */
+  .action-bar{display:flex;gap:8px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="logo" onclick="showPage('home')">
+    <div class="logo-icon">⛓</div>
+    ChainWork
+  </div>
+  <div class="nav-links">
+    <a href="#" class="active" onclick="showPage('home');return false;">Home</a>
+    <a href="#" onclick="showPage('jobs');return false;">Browse Jobs</a>
+    <a href="#" onclick="showPage('pricing');return false;">Pricing</a>
+    <a href="#" onclick="showPage('company-dash');return false;">For Companies</a>
+  </div>
+  <div class="nav-right">
+    <button class="btn btn-ghost btn-sm" onclick="openModal('loginModal')">Sign In</button>
+    <button class="btn btn-primary btn-sm" onclick="openModal('registerModal')">Get Started</button>
+    <div class="hamburger" onclick="toggleMobileMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <span class="mobile-nav-link" onclick="showPage('home');toggleMobileMenu()">Home</span>
+  <span class="mobile-nav-link" onclick="showPage('jobs');toggleMobileMenu()">Browse Jobs</span>
+  <span class="mobile-nav-link" onclick="showPage('pricing');toggleMobileMenu()">Pricing</span>
+  <span class="mobile-nav-link" onclick="showPage('seeker-dash');toggleMobileMenu()">Dashboard</span>
+  <span class="mobile-nav-link" onclick="openModal('loginModal');toggleMobileMenu()">Sign In</span>
+  <button class="btn btn-primary w-full mt-2" onclick="openModal('registerModal')">Get Started</button>
+</div>
+
+<!-- ===================== HOME PAGE ===================== -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div style="position:relative;z-index:1;width:100%;max-width:800px;">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        2,400+ Active Web3 & Tech Jobs
+      </div>
+      <h1>
+        Find Your Next<br>
+        <span class="gradient">Web3 & Tech Role</span>
+      </h1>
+      <p>The premium job board for blockchain developers, DeFi engineers, and full-stack tech professionals. Remote-first. Web3-native.</p>
+      
+      <div class="hero-search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--gray2);flex-shrink:0"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="heroSearch" placeholder="Search jobs, skills, companies..." oninput="handleHeroSearch(this.value)">
+        <button class="btn btn-primary" onclick="showPage('jobs')">Search</button>
+      </div>
+      
+      <div class="hero-tags">
+        <span class="hero-tag" onclick="filterAndGoJobs('Web3')">⛓ Web3 & Blockchain</span>
+        <span class="hero-tag" onclick="filterAndGoJobs('DeFi')">💎 DeFi</span>
+        <span class="hero-tag" onclick="filterAndGoJobs('Frontend')">🎨 Frontend</span>
+        <span class="hero-tag" onclick="filterAndGoJobs('Remote')">🌍 Remote Only</span>
+        <span class="hero-tag" onclick="filterAndGoJobs('Smart Contract')">📜 Smart Contracts</span>
+        <span class="hero-tag" onclick="filterAndGoJobs('AI')">🤖 AI/ML</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num" id="ctr1">0</div><div class="stat-label">Active Jobs</div></div>
+    <div class="stat-item"><div class="stat-num" id="ctr2">0</div><div class="stat-label">Companies Hiring</div></div>
+    <div class="stat-item"><div class="stat-num" id="ctr3">0</div><div class="stat-label">Professionals</div></div>
+    <div class="stat-item"><div class="stat-num" id="ctr4">0</div><div class="stat-label">Placements This Month</div></div>
+  </div>
+
+  <!-- FEATURED JOBS -->
+  <section>
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="section-title">Featured Jobs</div>
+          <div class="section-sub">Hand-picked opportunities from top Web3 companies</div>
+        </div>
+        <button class="btn btn-outline" onclick="showPage('jobs')">View All Jobs →</button>
+      </div>
+      <div class="jobs-grid" id="featuredJobs"></div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section style="background:var(--navy2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="section-title">Browse by Category</div>
+          <div class="section-sub">Find roles that match your expertise</div>
+        </div>
+      </div>
+      <div class="categories-grid" id="categoriesGrid"></div>
+    </div>
+  </section>
+
+  <!-- LATEST JOBS -->
+  <section>
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="section-title">Latest Opportunities</div>
+          <div class="section-sub">Fresh listings posted in the last 48 hours</div>
+        </div>
+        <button class="btn btn-outline" onclick="showPage('jobs')">See More →</button>
+      </div>
+      <div class="jobs-grid" id="latestJobs"></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="background:var(--navy2);border-top:1px solid var(--border)">
+    <div class="container" style="text-align:center;max-width:700px">
+      <div style="font-size:2rem;margin-bottom:1rem">🚀</div>
+      <h2 style="font-family:var(--font-head);font-size:2rem;font-weight:800;margin-bottom:1rem">Ready to Hire Web3 Talent?</h2>
+      <p style="color:var(--gray);margin-bottom:2rem">Post your jobs to thousands of blockchain and tech professionals. Start hiring in minutes.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary btn-lg" onclick="openModal('registerModal')">Post a Job</button>
+        <button class="btn btn-outline btn-lg" onclick="showPage('pricing')">View Plans</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">
+          <div class="logo-icon" style="font-size:14px">⛓</div>
+          ChainWork
+        </div>
+        <p class="footer-desc">The premier job board for Web3, blockchain, and tech professionals. Remote-first, community-driven.</p>
+        <div class="social-links">
+          <a class="social-link">𝕏</a>
+          <a class="social-link">in</a>
+          <a class="social-link">gh</a>
+          <a class="social-link">tg</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-title">For Job Seekers</div>
+        <div class="footer-links">
+          <span class="footer-link" onclick="showPage('jobs')">Browse Jobs</span>
+          <span class="footer-link" onclick="showPage('pricing')">Pro Membership</span>
+          <span class="footer-link">Career Resources</span>
+          <span class="footer-link">Salary Guide</span>
+        </div>
+      </div>
+      <div>
+        <div class="footer-title">For Companies</div>
+        <div class="footer-links">
+          <span class="footer-link" onclick="showPage('pricing')">Post a Job</span>
+          <span class="footer-link" onclick="showPage('pricing')">Pricing Plans</span>
+          <span class="footer-link">Talent Pool</span>
+          <span class="footer-link">Hiring Guide</span>
+        </div>
+      </div>
+      <div>
+        <div class="footer-title">Company</div>
+        <div class="footer-links">
+          <span class="footer-link">About ChainWork</span>
+          <span class="footer-link">Blog</span>
+          <span class="footer-link">Privacy Policy</span>
+          <span class="footer-link">Terms of Service</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 ChainWork. All rights reserved.</span>
+      <span>Built for the Web3 generation ⛓</span>
+    </div>
+  </footer>
+</div>
+
+<!-- ===================== JOBS PAGE ===================== -->
+<div class="page" id="page-jobs">
+  <div class="jobs-page-layout">
+    <!-- FILTERS -->
+    <aside class="filters-panel">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+        <span style="font-family:var(--font-head);font-size:1rem;font-weight:700">Filters</span>
+        <button class="btn btn-ghost btn-sm" onclick="clearFilters()">Clear All</button>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Search</div>
+        <input class="filter-search" placeholder="Title, skill, keyword..." id="filterSearch" oninput="applyFilters()">
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Category</div>
+        <div class="filter-opts" id="categoryFilters">
+          <!-- Generated by JS -->
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Job Type</div>
+        <div class="filter-opts">
+          <label class="filter-opt"><input type="checkbox" onchange="applyFilters()" value="Full Time"> <span>Full Time</span></label>
+          <label class="filter-opt"><input type="checkbox" onchange="applyFilters()" value="Part Time"> <span>Part Time</span></label>
+          <label class="filter-opt"><input type="checkbox" onchange="applyFilters()" value="Contract"> <span>Contract / Freelance</span></label>
+          <label class="filter-opt"><input type="checkbox" onchange="applyFilters()" value="Internship"> <span>Internship</span></label>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Location</div>
+        <div class="filter-opts">
+          <label class="filter-opt"><input type="checkbox" onchange="applyFilters()" value="Remote"> <span>Remote</span></label>
+          <label class="filter-opt"><input type="checkbox" onchange="applyFilters()" value="US"> <span>United States</span></label>
+          <label class="filter-opt"><input type="checkbox" onchange="applyFilters()" value="EU"> <span>Europe</span></label>
+          <label class="filter-opt"><input type="checkbox" onchange="applyFilters()" value="Asia"> <span>Asia Pacific</span></label>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Experience</div>
+        <div class="filter-opts">
+          <label class="filter-opt"><input type="checkbox" onchange="applyFilters()" value="Entry"> <span>Entry Level (0-2 yrs)</span></label>
+          <label class="filter-opt"><input type="checkbox" onchange="applyFilters()" value="Mid"> <span>Mid Level (2-5 yrs)</span></label>
+          <label class="filter-opt"><input type="checkbox" onchange="applyFilters()" value="Senior"> <span>Senior (5+ yrs)</span></label>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Date Posted</div>
+        <div class="filter-opts">
+          <label class="filter-opt"><input type="radio" name="dateFilter" onchange="applyFilters()" value="24h"> <span>Last 24 hours</span></label>
+          <label class="filter-opt"><input type="radio" name="dateFilter" onchange="applyFilters()" value="7d"> <span>Last 7 days</span></label>
+          <label class="filter-opt"><input type="radio" name="dateFilter" onchange="applyFilters()" value="30d"> <span>Last 30 days</span></label>
+          <label class="filter-opt"><input type="radio" name="dateFilter" onchange="applyFilters()" value="any" checked> <span>Any time</span></label>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN JOBS LIST -->
+    <div class="jobs-main">
+      <div class="jobs-toolbar">
+        <div class="jobs-count">Showing <strong id="jobsCountText">0</strong> jobs</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <select class="sort-select" onchange="applyFilters()">
+            <option value="newest">Newest First</option>
+            <option value="salary">Highest Salary</option>
+            <option value="applicants">Most Applied</option>
+          </select>
+        </div>
+      </div>
+      <div id="jobsListGrid" class="jobs-grid"></div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== JOB DETAIL PAGE ===================== -->
+<div class="page" id="page-job-detail">
+  <div class="job-detail-layout">
+    <button class="btn btn-ghost btn-sm mb-2" onclick="showPage('jobs')" style="display:inline-flex;align-items:center;gap:6px">← Back to Jobs</button>
+    <div id="jobDetailContent"></div>
+  </div>
+</div>
+
+<!-- ===================== APPLY PAGE ===================== -->
+<div class="page" id="page-apply">
+  <div class="form-page">
+    <button class="btn btn-ghost btn-sm mb-2" onclick="history.back()" style="display:inline-flex;align-items:center;gap:6px">← Back</button>
+    <div class="form-card" id="applyFormContent">
+      <div class="form-title">Apply for Position</div>
+      <div class="form-sub" id="applyJobTitle">Software Engineer at Company</div>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input class="form-input" placeholder="Your full name">
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input class="form-input" type="email" placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input class="form-input" type="tel" placeholder="+1 (555) 000-0000">
+      </div>
+      <div class="form-group">
+        <label>LinkedIn Profile</label>
+        <input class="form-input" placeholder="https://linkedin.com/in/yourprofile">
+      </div>
+      <div class="form-group">
+        <label>GitHub / Portfolio</label>
+        <input class="form-input" placeholder="https://github.com/yourusername">
+      </div>
+      <div class="form-group">
+        <label>Cover Letter</label>
+        <textarea class="form-textarea" placeholder="Tell us why you're a great fit for this role..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Upload CV / Resume</label>
+        <div class="upload-zone" onclick="showToast('File upload requires Cloudinary integration','info')">
+          <div class="upload-icon">📎</div>
+          <div class="upload-text">Click to upload your CV</div>
+          <div class="upload-hint">PDF format, max 5MB</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Expected Salary (USD/year)</label>
+        <input class="form-input" placeholder="e.g. 120000">
+      </div>
+      <div class="form-group">
+        <label>Availability to Start</label>
+        <select class="form-select">
+          <option>Immediately</option>
+          <option>2 weeks notice</option>
+          <option>1 month notice</option>
+          <option>3+ months</option>
+        </select>
+      </div>
+      <button class="btn btn-primary w-full btn-lg mt-2" onclick="submitApplication()">Submit Application 🚀</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PRICING PAGE ===================== -->
+<div class="page" id="page-pricing">
+  <div style="max-width:1100px;margin:0 auto;padding:3rem 2rem;text-align:center">
+    <div class="hero-badge" style="display:inline-flex;margin-bottom:1.5rem">💎 Flexible Plans</div>
+    <h1 style="font-family:var(--font-head);font-size:2.5rem;font-weight:800;margin-bottom:1rem">Simple, Transparent Pricing</h1>
+    <p style="color:var(--gray);margin-bottom:3rem">Scale up or down anytime. Cancel anytime.</p>
+    
+    <!-- BILLING TOGGLE -->
+    <div style="display:inline-flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:3px;margin-bottom:3rem">
+      <button class="tab active" id="monthlyTab" onclick="setBilling('monthly')">Monthly</button>
+      <button class="tab" id="annualTab" onclick="setBilling('annual')">Annual <span style="font-size:0.7rem;background:var(--purple);color:white;border-radius:100px;padding:1px 6px;margin-left:4px">-17%</span></button>
+    </div>
+  </div>
+  
+  <div class="pricing-grid" id="pricingGrid">
+    <!-- Generated by JS -->
+  </div>
+  
+  <div style="text-align:center;padding:2rem;color:var(--gray);font-size:0.875rem">
+    All plans include SSL security, 24/7 uptime, and our applicant tracking system. Questions? <a href="#" style="color:var(--electric2)">Chat with us</a>
+  </div>
+</div>
+
+<!-- ===================== SEEKER DASHBOARD ===================== -->
+<div class="page" id="page-seeker-dash">
+  <div class="dash-layout">
+    <aside class="dash-sidebar">
+      <div class="profile-header" style="flex-direction:column;align-items:center;text-align:center;padding:1.25rem;margin-bottom:1rem;background:var(--surface);border-radius:var(--r2)">
+        <div class="avatar" style="width:56px;height:56px;font-size:1.25rem;margin-bottom:8px">AJ</div>
+        <div style="font-weight:600;font-size:0.9rem">Alex Johnson</div>
+        <div style="font-size:0.78rem;color:var(--gray)">Blockchain Developer</div>
+        <div class="badge badge-purple mt-2" style="font-size:0.7rem">PRO Member</div>
+      </div>
+      <nav class="dash-nav">
+        <div class="dash-nav-item active" onclick="seekerSection('overview')"><span class="dash-nav-icon">📊</span><span>Overview</span></div>
+        <div class="dash-nav-item" onclick="seekerSection('applications')"><span class="dash-nav-icon">📨</span><span>Applications</span></div>
+        <div class="dash-nav-item" onclick="seekerSection('saved')"><span class="dash-nav-icon">🔖</span><span>Saved Jobs</span></div>
+        <div class="dash-nav-item" onclick="seekerSection('profile')"><span class="dash-nav-icon">👤</span><span>My Profile</span></div>
+        <div class="dash-nav-item" onclick="seekerSection('alerts')"><span class="dash-nav-icon">🔔</span><span>Job Alerts</span></div>
+        <div class="dash-nav-item" onclick="showPage('pricing')"><span class="dash-nav-icon">💎</span><span>Upgrade Plan</span></div>
+        <div class="dash-nav-item" style="margin-top:auto;color:var(--danger)" onclick="showToast('Logged out successfully','info')"><span class="dash-nav-icon">🚪</span><span>Sign Out</span></div>
+      </nav>
+    </aside>
+    <div class="dash-content" id="seekerDashContent">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ===================== COMPANY DASHBOARD ===================== -->
+<div class="page" id="page-company-dash">
+  <div class="dash-layout">
+    <aside class="dash-sidebar">
+      <div style="background:var(--surface);border-radius:var(--r2);padding:1rem;margin-bottom:1rem;text-align:center">
+        <div class="company-logo" style="width:48px;height:48px;margin:0 auto 8px;border-radius:10px;font-size:1rem">CX</div>
+        <div style="font-weight:600;font-size:0.9rem">CryptoX Labs</div>
+        <div style="font-size:0.78rem;color:var(--gray)">Web3 Company</div>
+        <div class="badge badge-purple mt-2" style="font-size:0.7rem">✓ Verified</div>
+      </div>
+      <nav class="dash-nav">
+        <div class="dash-nav-item active" onclick="companySection('overview')"><span class="dash-nav-icon">📊</span><span>Overview</span></div>
+        <div class="dash-nav-item" onclick="companySection('jobs')"><span class="dash-nav-icon">💼</span><span>My Listings</span></div>
+        <div class="dash-nav-item" onclick="companySection('applicants')"><span class="dash-nav-icon">👥</span><span>Applicants</span></div>
+        <div class="dash-nav-item" onclick="companySection('analytics')"><span class="dash-nav-icon">📈</span><span>Analytics</span></div>
+        <div class="dash-nav-item" onclick="companySection('profile')"><span class="dash-nav-icon">🏢</span><span>Company Profile</span></div>
+        <div class="dash-nav-item" onclick="showPage('pricing')"><span class="dash-nav-icon">💎</span><span>Upgrade Plan</span></div>
+        <div class="dash-nav-item" onclick="openPostJobModal()"><span class="dash-nav-icon">➕</span><span>Post New Job</span></div>
+      </nav>
+    </aside>
+    <div class="dash-content" id="companyDashContent">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ===================== ADMIN PAGE ===================== -->
+<div class="page" id="page-admin">
+  <div class="admin-page">
+    <div class="dash-header">
+      <div>
+        <div class="dash-title">⚡ Admin Panel</div>
+        <div class="dash-sub">ChainWork Platform Management</div>
+      </div>
+      <div class="action-bar">
+        <button class="btn btn-outline btn-sm" onclick="showToast('Broadcast email sent to all users','success')">📧 Broadcast Email</button>
+        <button class="btn btn-ghost btn-sm" onclick="showPage('home')">Exit Admin</button>
+      </div>
+    </div>
+    
+    <div class="admin-grid">
+      <div class="admin-stat"><div class="admin-stat-icon">👥</div><div class="admin-stat-value" style="color:var(--electric2)">12,847</div><div class="admin-stat-label">Total Users</div></div>
+      <div class="admin-stat"><div class="admin-stat-icon">💼</div><div class="admin-stat-value" style="color:var(--success)">2,401</div><div class="admin-stat-label">Active Jobs</div></div>
+      <div class="admin-stat"><div class="admin-stat-icon">📨</div><div class="admin-stat-value" style="color:var(--warning)">34,200</div><div class="admin-stat-label">Applications</div></div>
+      <div class="admin-stat"><div class="admin-stat-icon">💰</div><div class="admin-stat-value" style="color:var(--purple3)">$48,930</div><div class="admin-stat-label">MRR</div></div>
+      <div class="admin-stat"><div class="admin-stat-icon">✅</div><div class="admin-stat-value">1,204</div><div class="admin-stat-label">Active Subs</div></div>
+      <div class="admin-stat"><div class="admin-stat-icon">🏢</div><div class="admin-stat-value">384</div><div class="admin-stat-label">Companies</div></div>
+    </div>
+    
+    <div class="admin-tabs">
+      <div class="admin-tab active" onclick="adminTab(this,'jobs-tab')">All Jobs</div>
+      <div class="admin-tab" onclick="adminTab(this,'users-tab')">Users</div>
+      <div class="admin-tab" onclick="adminTab(this,'revenue-tab')">Revenue</div>
+      <div class="admin-tab" onclick="adminTab(this,'companies-tab')">Companies</div>
+    </div>
+    
+    <div id="jobs-tab" class="admin-panel-content">
+      <div class="table-card">
+        <div class="table-header">
+          <span class="table-title">Job Listings</span>
+          <input class="filter-search" placeholder="Search listings..." style="width:200px">
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Job Title</th><th>Company</th><th>Category</th><th>Status</th><th>Posted</th><th>Actions</th></tr></thead>
+            <tbody id="adminJobsTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div id="users-tab" class="admin-panel-content" style="display:none">
+      <div class="table-card">
+        <div class="table-header"><span class="table-title">Registered Users</span></div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Plan</th><th>Joined</th><th>Actions</th></tr></thead>
+            <tbody id="adminUsersTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div id="revenue-tab" class="admin-panel-content" style="display:none">
+      <div class="table-card">
+        <div class="table-header"><span class="table-title">Stripe Transactions</span></div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Customer</th><th>Plan</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody id="adminRevenueTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div id="companies-tab" class="admin-panel-content" style="display:none">
+      <div class="table-card">
+        <div class="table-header"><span class="table-title">Company Accounts</span></div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Company</th><th>Plan</th><th>Jobs Posted</th><th>Verified</th><th>Actions</th></tr></thead>
+            <tbody id="adminCompaniesTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODALS ===================== -->
+
+<!-- LOGIN -->
+<div class="modal-overlay" id="loginModal" onclick="closeModalOutside(event,'loginModal')">
+  <div class="modal" style="position:relative">
+    <div class="modal-close" onclick="closeModal('loginModal')">✕</div>
+    <div class="modal-title">Welcome Back ⛓</div>
+    <div class="modal-sub">Sign in to your ChainWork account</div>
+    <div class="tabs" id="loginTabs">
+      <div class="tab active" onclick="switchLoginTab('email')">Email</div>
+      <div class="tab" onclick="switchLoginTab('otp')">OTP Login</div>
+    </div>
+    <div id="emailLoginForm">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input class="form-input" type="email" id="loginEmail" placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input class="form-input" type="password" placeholder="••••••••">
+      </div>
+      <button class="btn btn-primary w-full mt-2" onclick="handleLogin()">Sign In</button>
+    </div>
+    <div id="otpLoginForm" style="display:none">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input class="form-input" type="email" placeholder="your@email.com" id="otpEmail">
+      </div>
+      <button class="btn btn-outline w-full mt-2" id="sendOtpBtn" onclick="sendOTP()">Send OTP Code →</button>
+      <div id="otpSection" style="display:none;margin-top:1.5rem">
+        <div style="text-align:center;margin-bottom:1rem;font-size:0.875rem;color:var(--gray)">Enter the 6-digit code sent to your email</div>
+        <div class="otp-inputs">
+          <input class="otp-input" maxlength="1" oninput="otpNav(this,1)">
+          <input class="otp-input" maxlength="1" oninput="otpNav(this,2)">
+          <input class="otp-input" maxlength="1" oninput="otpNav(this,3)">
+          <input class="otp-input" maxlength="1" oninput="otpNav(this,4)">
+          <input class="otp-input" maxlength="1" oninput="otpNav(this,5)">
+          <input class="otp-input" maxlength="1" oninput="otpNav(this,6)">
+        </div>
+        <button class="btn btn-primary w-full" onclick="verifyOTP()">Verify & Sign In</button>
+        <div style="text-align:center;margin-top:1rem;font-size:0.8rem;color:var(--gray)" id="otpTimer">Code expires in <strong style="color:var(--electric2)">10:00</strong></div>
+      </div>
+    </div>
+    <div class="divider">or continue with</div>
+    <button class="social-btn" onclick="showToast('Google OAuth requires backend integration','info')">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+    <div style="text-align:center;margin-top:1rem;font-size:0.8rem;color:var(--gray)">Don't have an account? <span style="color:var(--electric2);cursor:pointer" onclick="closeModal('loginModal');openModal('registerModal')">Sign up</span></div>
+    <div style="text-align:center;margin-top:0.5rem;font-size:0.75rem;color:var(--gray2)">
+      <span style="cursor:pointer;color:var(--gray)" onclick="showPage('admin');closeModal('loginModal')">Admin login →</span>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTER -->
+<div class="modal-overlay" id="registerModal" onclick="closeModalOutside(event,'registerModal')">
+  <div class="modal" style="position:relative;max-width:480px">
+    <div class="modal-close" onclick="closeModal('registerModal')">✕</div>
+    <div class="modal-title">Join ChainWork ⛓</div>
+    <div class="modal-sub">Create your account to get started</div>
+    <div class="tabs">
+      <div class="tab active" id="seekerTab" onclick="switchRegTab('seeker')">Job Seeker</div>
+      <div class="tab" id="companyTab" onclick="switchRegTab('company')">Company</div>
+    </div>
+    <div class="form-group">
+      <label id="nameLabel">Full Name</label>
+      <input class="form-input" id="regName" placeholder="Your full name">
+    </div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input class="form-input" type="email" id="regEmail" placeholder="your@email.com">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input class="form-input" type="password" id="regPassword" placeholder="Minimum 8 characters">
+    </div>
+    <div class="form-group" id="companyUrlField" style="display:none">
+      <label>Company Website</label>
+      <input class="form-input" placeholder="https://yourcompany.com">
+    </div>
+    <button class="btn btn-primary w-full mt-2" onclick="handleRegister()">Create Account 🚀</button>
+    <div class="divider">or</div>
+    <button class="social-btn" onclick="showToast('Google OAuth requires backend integration','info')">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Sign up with Google
+    </button>
+    <div style="text-align:center;margin-top:1rem;font-size:0.8rem;color:var(--gray)">Already have an account? <span style="color:var(--electric2);cursor:pointer" onclick="closeModal('registerModal');openModal('loginModal')">Sign in</span></div>
+    <div style="text-align:center;margin-top:0.75rem;font-size:0.75rem;color:var(--gray2)">By signing up you agree to our <a href="#" style="color:var(--gray)">Terms</a> and <a href="#" style="color:var(--gray)">Privacy Policy</a></div>
+  </div>
+</div>
+
+<!-- POST JOB MODAL -->
+<div class="modal-overlay" id="postJobModal" onclick="closeModalOutside(event,'postJobModal')">
+  <div class="modal" style="position:relative;max-width:560px;max-height:90vh;overflow-y:auto">
+    <div class="modal-close" onclick="closeModal('postJobModal')">✕</div>
+    <div class="modal-title">Post a New Job</div>
+    <div class="modal-sub">Fill in the details to attract top talent</div>
+    <div class="form-group"><label>Job Title</label><input class="form-input" placeholder="e.g. Senior Solidity Developer"></div>
+    <div class="form-group"><label>Category</label>
+      <select class="form-select" id="postCategory">
+        <option>Web3 & Blockchain</option>
+        <option>Smart Contract Development</option>
+        <option>DeFi & Protocol Engineering</option>
+        <option>Frontend Development</option>
+        <option>Backend Development</option>
+        <option>Full Stack Development</option>
+        <option>DevOps & Cloud</option>
+        <option>UI/UX Design</option>
+        <option>Data & AI/ML</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-group"><label>Job Type</label>
+        <select class="form-select">
+          <option>Full Time</option><option>Part Time</option><option>Contract</option><option>Internship</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Location</label><input class="form-input" placeholder="Remote / City, Country"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-group"><label>Min Salary ($)</label><input class="form-input" type="number" placeholder="80000"></div>
+      <div class="form-group"><label>Max Salary ($)</label><input class="form-input" type="number" placeholder="150000"></div>
+    </div>
+    <div class="form-group"><label>Job Description</label><textarea class="form-textarea" style="min-height:150px" placeholder="Describe the role, responsibilities, and day-to-day work..."></textarea></div>
+    <div class="form-group"><label>Requirements</label><textarea class="form-textarea" placeholder="List key requirements, qualifications, and skills needed..."></textarea></div>
+    <div class="form-group"><label>Application Deadline</label><input class="form-input" type="date"></div>
+    <div class="form-group">
+      <label>Featured Listing</label>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+        <input type="checkbox" style="accent-color:var(--purple);width:16px;height:16px">
+        <span style="font-size:0.875rem;color:var(--gray)">Boost visibility (included in Pro plan)</span>
+      </div>
+    </div>
+    <button class="btn btn-primary w-full btn-lg mt-2" onclick="submitJob()">Post Job Listing 🚀</button>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const CATEGORIES = [
+  {name:'Web3 & Blockchain',icon:'⛓',count:342},
+  {name:'Smart Contract Dev',icon:'📜',count:128},
+  {name:'DeFi & Protocol',icon:'💎',count:97},
+  {name:'NFT & GameFi',icon:'🎮',count:74},
+  {name:'Frontend Dev',icon:'🎨',count:289},
+  {name:'Backend Dev',icon:'⚙️',count:211},
+  {name:'Full Stack',icon:'🔧',count:198},
+  {name:'DevOps & Cloud',icon:'☁️',count:143},
+  {name:'Mobile Dev',icon:'📱',count:89},
+  {name:'UI/UX Design',icon:'✏️',count:112},
+  {name:'Product Management',icon:'📋',count:67},
+  {name:'Data & AI/ML',icon:'🤖',count:156},
+  {name:'Cybersecurity',icon:'🔒',count:58},
+  {name:'Technical Writing',icon:'📝',count:34},
+  {name:'Freelance',icon:'🌐',count:421},
+  {name:'Remote Only',icon:'🌍',count:876},
+];
+
+const COMPANIES = ['Chainlink','Polygon','Uniswap','OpenSea','Alchemy','Coinbase','Binance','Aave','Compound','Arbitrum','Optimism','StarkWare','Filecoin','Solana Labs','Consensys','Phantom','Axie Infinity','Immutable','Blur','Lido'];
+
+const JOB_TYPES = ['Full Time','Contract','Part Time','Internship'];
+const LOCATIONS = ['Remote','New York, US','London, UK','Berlin, DE','Singapore','Dubai, UAE','San Francisco, US','Austin, TX','Toronto, CA','Remote (US Only)'];
+const EXPERIENCE = ['Entry Level','Mid Level','Senior','Lead/Principal'];
+const SKILLS_POOL = ['Solidity','Rust','TypeScript','React','Node.js','Python','Go','EVM','DeFi','Web3.js','Ethers.js','Hardhat','Foundry','GraphQL','PostgreSQL','Docker','Kubernetes','AWS','Zero Knowledge','Cairo','Move'];
+
+function randomItem(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function randomInt(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function randomSalary(){const base=randomInt(6,30)*10000;return `$${(base/1000).toFixed(0)}k – $${((base+randomInt(2,8)*10000)/1000).toFixed(0)}k`}
+function timeAgo(d){
+  const diff=Date.now()-d;
+  if(diff<86400000)return 'Today';
+  if(diff<172800000)return 'Yesterday';
+  if(diff<604800000)return `${Math.floor(diff/86400000)}d ago`;
+  return `${Math.floor(diff/604800000)}w ago`;
+}
+
+let allJobs = [];
+let filteredJobs = [];
+let currentPage = 1;
+const JOBS_PER_PAGE = 12;
+let savedJobs = new Set();
+let billingCycle = 'monthly';
+
+function generateJobs(count){
+  return Array.from({length:count},(_,i)=>{
+    const daysAgo = randomInt(0,30);
+    const posted = Date.now() - daysAgo*86400000;
+    const cats = CATEGORIES.slice(0,12);
+    const cat = randomItem(cats);
+    const company = randomItem(COMPANIES);
+    const skills = Array.from({length:randomInt(3,5)},()=>randomItem(SKILLS_POOL));
+    const applicants = randomInt(3,200);
+    const sources = [null,null,null,'Remotive','Arbeitnow','The Muse'];
+    return {
+      id:i+1,
+      title:randomItem(['Senior Developer','Lead Engineer','Protocol Engineer','Frontend Dev','Blockchain Architect','Smart Contract Dev','Full Stack Engineer','DevOps Engineer','UI/UX Designer','Product Manager','Data Engineer','Security Researcher','Technical Writer','DeFi Researcher','SDK Developer','Backend Engineer','Mobile Developer','Web3 Developer','Protocol Researcher','Core Developer']),
+      company,
+      logo:company.substring(0,2).toUpperCase(),
+      category:cat.name,
+      type:randomItem(JOB_TYPES),
+      location:randomItem(LOCATIONS),
+      salary:randomSalary(),
+      experience:randomItem(EXPERIENCE),
+      skills:skills.filter((v,i,a)=>a.indexOf(v)===i),
+      posted,
+      applicants,
+      featured: i<6,
+      source:randomItem(sources),
+      description:`We are looking for a talented professional to join our growing team at ${company}. This role involves building cutting-edge solutions in the Web3 ecosystem. You will work closely with our engineering team to architect, develop, and deploy scalable blockchain applications.`,
+      requirements:['3+ years of relevant experience','Deep understanding of blockchain technology','Strong problem-solving skills','Experience with DeFi protocols','Excellent communication skills'],
+    };
+  });
+}
+
+allJobs = generateJobs(80);
+filteredJobs = [...allJobs];
+
+// ============================================================
+// ROUTING
+// ============================================================
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pageEl = document.getElementById(`page-${page}`);
+  if(!pageEl){console.warn('Page not found:',page);return;}
+  pageEl.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  // Init page
+  if(page==='jobs') initJobsPage();
+  if(page==='seeker-dash') initSeekerDash();
+  if(page==='company-dash') initCompanyDash();
+  if(page==='pricing') initPricing();
+  if(page==='admin') initAdmin();
+}
+
+function filterAndGoJobs(term){
+  document.getElementById('filterSearch').value = term;
+  showPage('jobs');
+  applyFilters();
+}
+
+// ============================================================
+// HOME
+// ============================================================
+window.addEventListener('DOMContentLoaded',()=>{
+  renderFeaturedJobs();
+  renderCategories();
+  renderLatestJobs();
+  animateCounters();
+  initCategoryFilters();
+});
+
+function renderFeaturedJobs(){
+  const featured = allJobs.filter(j=>j.featured).slice(0,6);
+  document.getElementById('featuredJobs').innerHTML = featured.map(j=>jobCardHTML(j)).join('');
+}
+
+function renderLatestJobs(){
+  const latest = [...allJobs].sort((a,b)=>b.posted-a.posted).slice(0,6);
+  document.getElementById('latestJobs').innerHTML = latest.map(j=>jobCardHTML(j)).join('');
+}
+
+function renderCategories(){
+  document.getElementById('categoriesGrid').innerHTML = CATEGORIES.map(c=>`
+    <div class="cat-card" onclick="filterAndGoJobs('${c.name}')">
+      <div class="cat-icon">${c.icon}</div>
+      <div class="cat-name">${c.name}</div>
+      <div class="cat-count">${c.count} open roles</div>
+    </div>
+  `).join('');
+}
+
+function jobCardHTML(job){
+  const isNew = (Date.now()-job.posted)<86400000;
+  const isHot = job.applicants>50;
+  const isSaved = savedJobs.has(job.id);
+  return `
+  <div class="job-card${job.featured?' featured':''}" onclick="viewJob(${job.id})" style="position:relative">
+    <div class="card-top">
+      <div class="company-logo">${job.logo}</div>
+      <div class="card-meta">
+        <div class="card-title">${job.title}</div>
+        <div class="card-company">${job.company}</div>
+      </div>
+      <div class="bookmark-btn${isSaved?' saved':''}" onclick="toggleSave(event,${job.id})" title="Save job">
+        ${isSaved?'🔖':'🏷'}
+      </div>
+    </div>
+    <div class="card-badges">
+      ${isNew?'<span class="badge badge-new">✦ New</span>':''}
+      ${isHot?'<span class="badge badge-hot">🔥 Hot</span>':''}
+      ${job.featured?'<span class="badge badge-featured">⭐ Featured</span>':''}
+      <span class="badge badge-purple">${job.category}</span>
+      <span class="badge badge-blue">${job.type}</span>
+      <span class="badge badge-green">📍 ${job.location.includes('Remote')?'Remote':job.location}</span>
+    </div>
+    <div class="card-footer">
+      <div class="card-salary">${job.salary}</div>
+      <div class="card-date">${timeAgo(job.posted)}</div>
+    </div>
+    ${job.source?`<div class="source-badge">Via ${job.source}</div>`:''}
+  </div>`;
+}
+
+function animateCounters(){
+  const targets = [{id:'ctr1',target:2401},{id:'ctr2',target:384},{id:'ctr3',target:12847},{id:'ctr4',target:1204}];
+  targets.forEach(({id,target})=>{
+    let current=0;
+    const step=Math.ceil(target/60);
+    const interval=setInterval(()=>{
+      current=Math.min(current+step,target);
+      const el=document.getElementById(id);
+      if(el) el.textContent = current>=1000?`${(current/1000).toFixed(1)}k`:current;
+      if(current>=target) clearInterval(interval);
+    },30);
+  });
+}
+
+// ============================================================
+// JOBS PAGE
+// ============================================================
+function initCategoryFilters(){
+  document.getElementById('categoryFilters').innerHTML = CATEGORIES.slice(0,10).map(c=>`
+    <label class="filter-opt">
+      <input type="checkbox" onchange="applyFilters()" value="${c.name}">
+      <span>${c.name} <span style="color:var(--gray2)">(${c.count})</span></span>
+    </label>
+  `).join('');
+}
+
+function initJobsPage(){
+  applyFilters();
+}
+
+function applyFilters(){
+  const search = (document.getElementById('filterSearch')||{value:''}).value.toLowerCase();
+  const checkedCats = Array.from(document.querySelectorAll('#categoryFilters input:checked')).map(i=>i.value);
+  const checkedTypes = Array.from(document.querySelectorAll('.filter-opts input[type=checkbox]:not(#categoryFilters input):checked')).map(i=>i.value);
+  const sort = (document.querySelector('.sort-select')||{value:'newest'}).value;
+
+  filteredJobs = allJobs.filter(j=>{
+    if(search && !j.title.toLowerCase().includes(search) && !j.company.toLowerCase().includes(search) && !j.category.toLowerCase().includes(search)) return false;
+    if(checkedCats.length && !checkedCats.includes(j.category)) return false;
+    if(checkedTypes.length){
+      const typeMatch = checkedTypes.some(t=>j.type.includes(t)||j.location.includes(t));
+      if(!typeMatch) return false;
+    }
+    return true;
+  });
+
+  if(sort==='salary') filteredJobs.sort((a,b)=>parseInt(b.salary.replace(/\D/g,''))-parseInt(a.salary.replace(/\D/g,'')));
+  else if(sort==='applicants') filteredJobs.sort((a,b)=>b.applicants-a.applicants);
+  else filteredJobs.sort((a,b)=>b.posted-a.posted);
+
+  currentPage=1;
+  renderJobsList();
+  renderPagination();
+  document.getElementById('jobsCountText').textContent = filteredJobs.length;
+}
+
+function renderJobsList(){
+  const start=(currentPage-1)*JOBS_PER_PAGE;
+  const pageJobs = filteredJobs.slice(start,start+JOBS_PER_PAGE);
+  const el = document.getElementById('jobsListGrid');
+  if(!el) return;
+  if(pageJobs.length===0){
+    el.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔍</div><div class="empty-title">No jobs found</div><div class="empty-sub">Try adjusting your filters</div></div>`;
+    return;
+  }
+  el.innerHTML = pageJobs.map(j=>jobCardHTML(j)).join('');
+}
+
+function renderPagination(){
+  const total = Math.ceil(filteredJobs.length/JOBS_PER_PAGE);
+  const el = document.getElementById('pagination');
+  if(!el||total<=1){if(el)el.innerHTML='';return;}
+  let html = `<div class="page-btn" onclick="goPage(${currentPage-1})">&lsaquo;</div>`;
+  for(let i=1;i<=Math.min(total,7);i++){
+    html+=`<div class="page-btn${i===currentPage?' active':''}" onclick="goPage(${i})">${i}</div>`;
+  }
+  html+=`<div class="page-btn" onclick="goPage(${currentPage+1})">&rsaquo;</div>`;
+  el.innerHTML = html;
+}
+
+function goPage(p){
+  const total = Math.ceil(filteredJobs.length/JOBS_PER_PAGE);
+  if(p<1||p>total)return;
+  currentPage=p;
+  renderJobsList();
+  renderPagination();
+  window.scrollTo({top:80,behavior:'smooth'});
+}
+
+function clearFilters(){
+  document.querySelectorAll('.filter-opt input').forEach(i=>i.checked=false);
+  document.getElementById('filterSearch').value='';
+  document.querySelector('input[name=dateFilter][value=any]').checked=true;
+  applyFilters();
+}
+
+function viewJob(id){
+  const job = allJobs.find(j=>j.id===id);
+  if(!job) return;
+  document.getElementById('jobDetailContent').innerHTML = `
+    <div class="job-detail-header">
+      <div class="job-detail-top">
+        <div class="company-logo-lg">${job.logo}</div>
+        <div class="job-detail-info">
+          <h1>${job.title}</h1>
+          <div class="company-name">${job.company} ${job.featured?'<span class="verified">✓ Verified</span>':''}</div>
+          <div class="tag-row mt-2">
+            <span class="badge badge-purple">${job.category}</span>
+            <span class="badge badge-blue">${job.type}</span>
+            ${job.source?`<span class="badge badge-orange">Via ${job.source}</span>`:''}
+          </div>
+        </div>
+      </div>
+      <div class="job-detail-meta">
+        <div class="meta-item">📍 ${job.location}</div>
+        <div class="meta-item">💰 ${job.salary}</div>
+        <div class="meta-item">👤 ${job.experience}</div>
+        <div class="meta-item">👥 ${job.applicants} applicants</div>
+        <div class="meta-item">📅 Posted ${timeAgo(job.posted)}</div>
+      </div>
+    </div>
+    <div class="job-detail-body">
+      <div class="job-section">
+        <h3>About the Role</h3>
+        <p>${job.description} As part of our team, you will have the opportunity to work on groundbreaking products that will shape the future of decentralized finance and Web3 infrastructure.</p>
+      </div>
+      <div class="job-section">
+        <h3>Key Requirements</h3>
+        <ul>${job.requirements.map(r=>`<li>${r}</li>`).join('')}</ul>
+      </div>
+      <div class="job-section">
+        <h3>Tech Stack</h3>
+        <div class="tag-row">${job.skills.map(s=>`<span class="badge badge-purple">${s}</span>`).join('')}</div>
+      </div>
+      <div class="job-section">
+        <h3>Benefits</h3>
+        <ul>
+          <li>Fully remote work environment</li>
+          <li>Competitive token compensation</li>
+          <li>Health insurance coverage</li>
+          <li>Learning & development budget</li>
+          <li>Flexible working hours</li>
+        </ul>
+      </div>
+    </div>
+    <div class="apply-sticky">
+      <div>
+        <div style="font-family:var(--font-head);font-weight:700;font-size:1.1rem">${job.salary} <span style="color:var(--gray);font-size:0.875rem;font-weight:400">/ year</span></div>
+        <div style="font-size:0.8rem;color:var(--gray);margin-top:2px">Deadline: ${new Date(job.posted+30*86400000).toLocaleDateString()}</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-ghost" onclick="toggleSave(event,${job.id})">${savedJobs.has(job.id)?'🔖 Saved':'🏷 Save Job'}</button>
+        ${job.source?`<button class="btn btn-outline" onclick="showToast('Opening job on ${job.source}...','info')">View on ${job.source} ↗</button>`:'<button class="btn btn-primary btn-lg" onclick="applyToJob(${job.id})">Apply Now 🚀</button>'}
+      </div>
+    </div>
+  `;
+  showPage('job-detail');
+}
+
+function applyToJob(id){
+  const job = allJobs.find(j=>j.id===id);
+  if(job) document.getElementById('applyJobTitle').textContent = `${job.title} at ${job.company}`;
+  showPage('apply');
+}
+
+function submitApplication(){
+  showToast('Application submitted successfully! 🎉','success');
+  setTimeout(()=>showPage('seeker-dash'),1000);
+}
+
+function toggleSave(e,id){
+  e.stopPropagation();
+  if(savedJobs.has(id)){savedJobs.delete(id);showToast('Job removed from saved','info')}
+  else{savedJobs.add(id);showToast('Job saved! 🔖','success')}
+  // Re-render current view
+  if(document.getElementById('page-jobs').classList.contains('active')) renderJobsList();
+  if(document.getElementById('page-home').classList.contains('active')){renderFeaturedJobs();renderLatestJobs();}
+}
+
+// ============================================================
+// SEEKER DASHBOARD
+// ============================================================
+const seekerApps = [
+  {job:'Senior Solidity Developer',company:'Chainlink',salary:'$120k',status:'reviewing',date:'3 days ago'},
+  {job:'DeFi Protocol Engineer',company:'Aave',salary:'$140k',status:'shortlisted',date:'1 week ago'},
+  {job:'Blockchain Architect',company:'Polygon',salary:'$160k',status:'applied',date:'2 weeks ago'},
+  {job:'Smart Contract Dev',company:'Uniswap',salary:'$130k',status:'rejected',date:'3 weeks ago'},
+  {job:'Web3 Frontend Dev',company:'OpenSea',salary:'$100k',status:'hired',date:'1 month ago'},
+];
+
+function seekerSection(section){
+  document.querySelectorAll('#page-seeker-dash .dash-nav-item').forEach(i=>i.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  renderSeekerContent(section);
+}
+
+function initSeekerDash(){
+  renderSeekerContent('overview');
+}
+
+function renderSeekerContent(section){
+  const el = document.getElementById('seekerDashContent');
+  if(section==='overview'){
+    el.innerHTML = `
+      <div class="dash-header">
+        <div><div class="dash-title">Welcome back, Alex 👋</div><div class="dash-sub">Here's your job search overview</div></div>
+        <button class="btn btn-primary" onclick="showPage('jobs')">Browse Jobs</button>
+      </div>
+      <div class="metrics-grid">
+        <div class="metric-card"><div class="metric-label">Applications Sent</div><div class="metric-value">12</div><div class="metric-change up">↑ 4 this week</div></div>
+        <div class="metric-card"><div class="metric-label">Profile Views</div><div class="metric-value">84</div><div class="metric-change up">↑ 12 new</div></div>
+        <div class="metric-card"><div class="metric-label">Saved Jobs</div><div class="metric-value">${savedJobs.size}</div></div>
+        <div class="metric-card"><div class="metric-label">Interviews</div><div class="metric-value">2</div><div class="metric-change up">Scheduled</div></div>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><span class="table-title">Recent Applications</span><button class="btn btn-ghost btn-sm" onclick="seekerSection('applications')">View All</button></div>
+        <table><thead><tr><th>Position</th><th>Company</th><th>Salary</th><th>Status</th><th>Applied</th></tr></thead>
+        <tbody>${seekerApps.slice(0,4).map(a=>`<tr>
+          <td style="color:var(--white)">${a.job}</td>
+          <td>${a.company}</td>
+          <td style="color:var(--electric2)">${a.salary}</td>
+          <td><span class="status-badge status-${a.status}">${a.status.charAt(0).toUpperCase()+a.status.slice(1)}</span></td>
+          <td>${a.date}</td>
+        </tr>`).join('')}</tbody>
+        </table>
+      </div>
+      <div style="margin-top:1.5rem">
+        <div class="table-title" style="margin-bottom:1rem">Recommended For You</div>
+        <div class="jobs-grid">${allJobs.slice(10,13).map(j=>jobCardHTML(j)).join('')}</div>
+      </div>
+    `;
+  } else if(section==='applications'){
+    el.innerHTML = `
+      <div class="dash-header"><div><div class="dash-title">My Applications</div><div class="dash-sub">Track all your job applications</div></div></div>
+      <div class="table-card">
+        <table><thead><tr><th>Position</th><th>Company</th><th>Salary</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+        <tbody>${seekerApps.map(a=>`<tr>
+          <td style="color:var(--white)">${a.job}</td>
+          <td>${a.company}</td>
+          <td style="color:var(--electric2)">${a.salary}</td>
+          <td><span class="status-badge status-${a.status}">${a.status.charAt(0).toUpperCase()+a.status.slice(1)}</span></td>
+          <td>${a.date}</td>
+          <td><button class="btn btn-ghost btn-sm" onclick="showToast('Application details viewed','info')">View</button></td>
+        </tr>`).join('')}</tbody>
+        </table>
+      </div>
+    `;
+  } else if(section==='saved'){
+    const saved = allJobs.filter(j=>savedJobs.has(j.id));
+    el.innerHTML = `
+      <div class="dash-header"><div><div class="dash-title">Saved Jobs</div><div class="dash-sub">${saved.length} jobs bookmarked</div></div></div>
+      ${saved.length?`<div class="jobs-grid">${saved.map(j=>jobCardHTML(j)).join('')}</div>`:`<div class="empty-state"><div class="empty-icon">🔖</div><div class="empty-title">No saved jobs yet</div><div class="empty-sub">Browse jobs and click the bookmark icon to save them</div><button class="btn btn-primary mt-2" onclick="showPage('jobs')">Browse Jobs</button></div>`}
+    `;
+  } else if(section==='profile'){
+    el.innerHTML = `
+      <div class="dash-header"><div><div class="dash-title">My Profile</div><div class="dash-sub">Update your professional information</div></div><button class="btn btn-primary btn-sm" onclick="showToast('Profile saved!','success')">Save Changes</button></div>
+      <div class="profile-header">
+        <div class="avatar">AJ</div>
+        <div>
+          <div style="font-family:var(--font-head);font-size:1.25rem;font-weight:700">Alex Johnson</div>
+          <div style="color:var(--gray);margin-top:4px">Blockchain Developer · Web3 Enthusiast</div>
+          <div class="profile-badges"><span class="badge badge-purple">PRO Member</span><span class="badge badge-green">Open to Work</span></div>
+        </div>
+        <div style="margin-left:auto"><button class="btn btn-ghost btn-sm" onclick="showToast('Upload avatar clicked','info')">📷 Change Photo</button></div>
+      </div>
+      <div class="form-card mt-2">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="form-group"><label>First Name</label><input class="form-input" value="Alex"></div>
+          <div class="form-group"><label>Last Name</label><input class="form-input" value="Johnson"></div>
+        </div>
+        <div class="form-group"><label>Professional Title</label><input class="form-input" value="Senior Blockchain Developer"></div>
+        <div class="form-group"><label>Bio</label><textarea class="form-textarea">Experienced blockchain developer with 5+ years in DeFi and smart contract development. Passionate about building the decentralized future.</textarea></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="form-group"><label>GitHub</label><input class="form-input" placeholder="https://github.com/username"></div>
+          <div class="form-group"><label>LinkedIn</label><input class="form-input" placeholder="https://linkedin.com/in/username"></div>
+        </div>
+        <div class="form-group">
+          <label>Skills</label>
+          <div class="skills-input">
+            ${['Solidity','Rust','TypeScript','React','Hardhat','Web3.js'].map(s=>`<span class="skill-tag">${s}<span class="skill-tag-x" onclick="this.parentElement.remove()">✕</span></span>`).join('')}
+            <input style="background:transparent;border:none;outline:none;font-family:var(--font-body);font-size:0.875rem;color:var(--white);min-width:80px" placeholder="Add skill...">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Upload CV</label>
+          <div class="upload-zone" onclick="showToast('CV upload requires Cloudinary setup','info')">
+            <div class="upload-icon">📎</div>
+            <div class="upload-text">Click to upload or replace CV</div>
+            <div class="upload-hint">PDF, max 5MB</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Expected Salary</label>
+          <input class="form-input" placeholder="e.g. $120,000/year">
+        </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+            <input type="checkbox" style="accent-color:var(--purple);width:16px;height:16px" checked>
+            <span>Open to Work — show my profile to recruiters</span>
+          </label>
+        </div>
+      </div>
+    `;
+  } else if(section==='alerts'){
+    el.innerHTML = `
+      <div class="dash-header"><div><div class="dash-title">Job Alerts</div><div class="dash-sub">Get notified about new matching opportunities</div></div><button class="btn btn-primary btn-sm" onclick="showToast('Alert created!','success')">+ New Alert</button></div>
+      <div class="table-card">
+        <div class="table-header"><span class="table-title">Active Alerts</span></div>
+        <table><thead><tr><th>Alert Name</th><th>Keywords</th><th>Frequency</th><th>Matches</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--white)">Web3 Developer</td><td>Solidity, DeFi, Blockchain</td><td>Daily</td><td>24 new</td><td><span class="status-badge status-shortlisted">Active</span></td></tr>
+          <tr><td style="color:var(--white)">Frontend React</td><td>React, TypeScript, Web3</td><td>Weekly</td><td>8 new</td><td><span class="status-badge status-shortlisted">Active</span></td></tr>
+          <tr><td style="color:var(--white)">Remote Senior</td><td>Senior, Remote, Full-time</td><td>Instant</td><td>3 new</td><td><span class="status-badge status-reviewing">Paused</span></td></tr>
+        </tbody>
+        </table>
+      </div>
+    `;
+  }
+}
+
+// ============================================================
+// COMPANY DASHBOARD
+// ============================================================
+const companyJobs = [
+  {title:'Senior Solidity Developer',type:'Full Time',applicants:47,status:'active',posted:'2 days ago'},
+  {title:'DeFi Protocol Researcher',type:'Contract',applicants:23,status:'active',posted:'1 week ago'},
+  {title:'Frontend React Developer',type:'Full Time',applicants:89,status:'active',posted:'2 weeks ago'},
+  {title:'DevOps Engineer',type:'Full Time',applicants:12,status:'paused',posted:'3 weeks ago'},
+];
+
+const applicants = [
+  {name:'Sarah Chen',role:'Senior Solidity Dev',exp:'5 years',status:'shortlisted',applied:'1 day ago'},
+  {name:'Marcus Reid',role:'DeFi Protocol Researcher',exp:'4 years',status:'reviewing',applied:'2 days ago'},
+  {name:'Priya Sharma',role:'Frontend Dev',exp:'3 years',status:'applied',applied:'3 days ago'},
+  {name:'David Kim',role:'Senior Solidity Dev',exp:'7 years',status:'hired',applied:'1 week ago'},
+  {name:'Emma Walsh',role:'DevOps Engineer',exp:'6 years',status:'rejected',applied:'2 weeks ago'},
+];
+
+function companySection(section){
+  document.querySelectorAll('#page-company-dash .dash-nav-item').forEach(i=>i.classList.remove('active'));
+  if(event && event.currentTarget) event.currentTarget.classList.add('active');
+  renderCompanyContent(section);
+}
+
+function initCompanyDash(){
+  renderCompanyContent('overview');
+}
+
+function renderCompanyContent(section){
+  const el = document.getElementById('companyDashContent');
+  if(section==='overview'){
+    el.innerHTML = `
+      <div class="dash-header">
+        <div><div class="dash-title">Company Dashboard</div><div class="dash-sub">CryptoX Labs · Web3 Company</div></div>
+        <button class="btn btn-primary" onclick="openPostJobModal()">+ Post New Job</button>
+      </div>
+      <div class="metrics-grid">
+        <div class="metric-card"><div class="metric-label">Active Job Posts</div><div class="metric-value">4</div></div>
+        <div class="metric-card"><div class="metric-label">Total Applicants</div><div class="metric-value">171</div><div class="metric-change up">↑ 23 this week</div></div>
+        <div class="metric-card"><div class="metric-label">Profile Views</div><div class="metric-value">2,840</div><div class="metric-change up">↑ 340 this month</div></div>
+        <div class="metric-card"><div class="metric-label">Hired This Month</div><div class="metric-value">3</div><div class="metric-change up">On track</div></div>
+      </div>
+      <div class="table-card mb-2">
+        <div class="table-header"><span class="table-title">Active Job Listings</span><button class="btn btn-ghost btn-sm" onclick="companySection('jobs')">Manage All</button></div>
+        <table><thead><tr><th>Title</th><th>Type</th><th>Applicants</th><th>Status</th><th>Posted</th></tr></thead>
+        <tbody>${companyJobs.map(j=>`<tr>
+          <td style="color:var(--white)">${j.title}</td>
+          <td>${j.type}</td>
+          <td><strong style="color:var(--electric2)">${j.applicants}</strong></td>
+          <td><span class="status-badge ${j.status==='active'?'status-hired':'status-reviewing'}">${j.status.charAt(0).toUpperCase()+j.status.slice(1)}</span></td>
+          <td>${j.posted}</td>
+        </tr>`).join('')}</tbody>
+        </table>
+      </div>
+    `;
+  } else if(section==='jobs'){
+    el.innerHTML = `
+      <div class="dash-header"><div><div class="dash-title">My Job Listings</div><div class="dash-sub">${companyJobs.length} total listings</div></div><button class="btn btn-primary" onclick="openPostJobModal()">+ Post New Job</button></div>
+      <div class="table-card">
+        <table><thead><tr><th>Title</th><th>Type</th><th>Applicants</th><th>Status</th><th>Posted</th><th>Actions</th></tr></thead>
+        <tbody>${companyJobs.map(j=>`<tr>
+          <td style="color:var(--white)">${j.title}</td>
+          <td>${j.type}</td>
+          <td>${j.applicants}</td>
+          <td><span class="status-badge ${j.status==='active'?'status-hired':'status-reviewing'}">${j.status}</span></td>
+          <td>${j.posted}</td>
+          <td><div style="display:flex;gap:6px">
+            <button class="btn btn-ghost btn-sm" onclick="showToast('Edit mode opened','info')">Edit</button>
+            <button class="btn btn-ghost btn-sm" onclick="showToast('Job paused','info')">⏸</button>
+            <button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="showToast('Job deleted','info')">🗑</button>
+          </div></td>
+        </tr>`).join('')}</tbody>
+        </table>
+      </div>
+    `;
+  } else if(section==='applicants'){
+    el.innerHTML = `
+      <div class="dash-header"><div><div class="dash-title">Applicants</div><div class="dash-sub">Manage all candidates</div></div><button class="btn btn-ghost btn-sm" onclick="showToast('Downloading all CVs...','info')">⬇ Download All CVs</button></div>
+      <div class="table-card">
+        <table><thead><tr><th>Candidate</th><th>Position</th><th>Experience</th><th>Status</th><th>Applied</th><th>Actions</th></tr></thead>
+        <tbody>${applicants.map(a=>`<tr>
+          <td><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--electric));display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700">${a.name.split(' ').map(n=>n[0]).join('')}</div><span style="color:var(--white)">${a.name}</span></div></td>
+          <td>${a.role}</td>
+          <td>${a.exp}</td>
+          <td><span class="status-badge status-${a.status}">${a.status.charAt(0).toUpperCase()+a.status.slice(1)}</span></td>
+          <td>${a.applied}</td>
+          <td><div style="display:flex;gap:6px">
+            <button class="btn btn-ghost btn-sm" onclick="showToast('CV downloaded','success')">📄 CV</button>
+            <select class="sort-select" style="font-size:0.75rem;padding:4px 8px" onchange="showToast('Status updated to '+this.value,'success')">
+              <option>Change Status</option>
+              <option>Reviewing</option><option>Shortlisted</option><option>Hired</option><option>Rejected</option>
+            </select>
+          </div></td>
+        </tr>`).join('')}</tbody>
+        </table>
+      </div>
+    `;
+  } else if(section==='analytics'){
+    el.innerHTML = `
+      <div class="dash-header"><div><div class="dash-title">Analytics</div><div class="dash-sub">Performance across your job listings</div></div></div>
+      <div class="metrics-grid">
+        <div class="metric-card"><div class="metric-label">Total Views (30d)</div><div class="metric-value">12,480</div><div class="metric-change up">↑ 18% vs last month</div></div>
+        <div class="metric-card"><div class="metric-label">Applications</div><div class="metric-value">171</div><div class="metric-change up">↑ 24%</div></div>
+        <div class="metric-card"><div class="metric-label">Conversion Rate</div><div class="metric-value">1.4%</div><div class="metric-change up">↑ 0.3%</div></div>
+        <div class="metric-card"><div class="metric-label">Avg. Response Time</div><div class="metric-value">2.3d</div></div>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><span class="table-title">Listing Performance</span></div>
+        <table><thead><tr><th>Job</th><th>Views</th><th>Apps</th><th>Conversion</th><th>Trending</th></tr></thead>
+        <tbody>${companyJobs.map(j=>`<tr>
+          <td style="color:var(--white)">${j.title}</td>
+          <td>${randomInt(800,4000).toLocaleString()}</td>
+          <td>${j.applicants}</td>
+          <td>${(j.applicants/randomInt(800,4000)*100).toFixed(1)}%</td>
+          <td><div class="progress-bar" style="width:80px;display:inline-block"><div class="progress-fill" style="width:${randomInt(30,90)}%"></div></div></td>
+        </tr>`).join('')}</tbody>
+        </table>
+      </div>
+    `;
+  } else if(section==='profile'){
+    el.innerHTML = `
+      <div class="dash-header"><div><div class="dash-title">Company Profile</div></div><button class="btn btn-primary btn-sm" onclick="showToast('Company profile saved!','success')">Save Changes</button></div>
+      <div class="form-card">
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
+          <div class="company-logo" style="width:72px;height:72px;font-size:1.5rem;border-radius:16px">CX</div>
+          <div><div style="font-weight:700;font-size:1.1rem">CryptoX Labs</div><button class="btn btn-ghost btn-sm mt-2" onclick="showToast('Logo upload requires Cloudinary','info')">Upload Logo</button></div>
+        </div>
+        <div class="form-group"><label>Company Name</label><input class="form-input" value="CryptoX Labs"></div>
+        <div class="form-group"><label>Description</label><textarea class="form-textarea">Leading Web3 infrastructure company building next-generation blockchain solutions for enterprise and DeFi ecosystems.</textarea></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="form-group"><label>Website</label><input class="form-input" value="https://cryptoxlabs.io"></div>
+          <div class="form-group"><label>Company Size</label>
+            <select class="form-select"><option>1–10</option><option>11–50</option><option selected>51–200</option><option>201–500</option><option>500+</option></select>
+          </div>
+        </div>
+        <div class="form-group"><label>Location (HQ)</label><input class="form-input" value="Remote / Singapore"></div>
+        <div class="form-group"><label>Industry</label><input class="form-input" value="Web3 / Blockchain Infrastructure"></div>
+      </div>
+    `;
+  }
+}
+
+// ============================================================
+// PRICING
+// ============================================================
+const PLANS = [
+  {name:'Free',desc:'Get started for free',monthly:0,annual:0,color:'',features:[
+    {text:'Browse all jobs',yes:true},
+    {text:'Apply to 5 jobs/month',yes:true},
+    {text:'Upload 1 CV',yes:true},
+    {text:'Basic profile',yes:true},
+    {text:'Unlimited applications',yes:false},
+    {text:'Email job alerts',yes:false},
+  ],cta:'Get Started Free',popular:false},
+  {name:'Pro Seeker',desc:'Unlimited job hunting',monthly:9.99,annual:7.99,color:'purple',features:[
+    {text:'Unlimited applications',yes:true},
+    {text:'Highlighted profile',yes:true},
+    {text:'CV + portfolio upload',yes:true},
+    {text:'Application tracking',yes:true},
+    {text:'Email job alerts',yes:true},
+    {text:'Open to Work badge',yes:true},
+    {text:'Early access (24h ahead)',yes:true},
+  ],cta:'Start 7-Day Free Trial',popular:true},
+  {name:'Company Starter',desc:'Post jobs & find talent',monthly:29.99,annual:24.99,color:'',features:[
+    {text:'3 active job posts',yes:true},
+    {text:'View all applicants',yes:true},
+    {text:'Basic company profile',yes:true},
+    {text:'Email notifications',yes:true},
+    {text:'Featured job slots',yes:false},
+    {text:'Analytics dashboard',yes:false},
+    {text:'Priority support',yes:false},
+  ],cta:'Start Hiring',popular:false},
+  {name:'Company Pro',desc:'Full hiring power',monthly:79.99,annual:66.99,color:'',features:[
+    {text:'Unlimited job posts',yes:true},
+    {text:'2 featured slots/month',yes:true},
+    {text:'Full analytics dashboard',yes:true},
+    {text:'Bulk CV download',yes:true},
+    {text:'Verified badge ✓',yes:true},
+    {text:'Talent pool access',yes:true},
+    {text:'Priority support',yes:true},
+  ],cta:'Go Pro',popular:false},
+];
+
+function initPricing(){
+  renderPricingCards();
+}
+
+function setBilling(cycle){
+  billingCycle=cycle;
+  document.getElementById('monthlyTab').className='tab'+(cycle==='monthly'?' active':'');
+  document.getElementById('annualTab').className='tab'+(cycle==='annual'?' active':'');
+  renderPricingCards();
+}
+
+function renderPricingCards(){
+  document.getElementById('pricingGrid').innerHTML = PLANS.map(p=>`
+    <div class="pricing-card${p.popular?' popular':''}">
+      ${p.popular?'<div class="popular-badge">⭐ Most Popular</div>':''}
+      <div class="pricing-name">${p.name}</div>
+      <div class="pricing-desc">${p.desc}</div>
+      <div class="pricing-price">
+        <span class="price-amount">${p.monthly===0?'Free':`$${billingCycle==='annual'?p.annual:p.monthly}`}</span>
+        ${p.monthly>0?`<span class="price-period">/${billingCycle==='annual'?'mo, billed annually':'month'}</span>`:''}
+      </div>
+      <div class="pricing-features">
+        ${p.features.map(f=>`<div class="pricing-feature"><span class="${f.yes?'check':'cross'}">${f.yes?'✓':'✗'}</span>${f.text}</div>`).join('')}
+      </div>
+      <button class="btn ${p.popular?'btn-primary':'btn-outline'} w-full btn-lg" onclick="handleSubscribe('${p.name}')">
+        ${p.cta}
+      </button>
+      ${p.monthly>0?`<div style="text-align:center;margin-top:8px;font-size:0.75rem;color:var(--gray2)">Cancel anytime</div>`:''}
+    </div>
+  `).join('');
+}
+
+function handleSubscribe(plan){
+  if(plan==='Free'){showPage('seeker-dash');return;}
+  showToast(`Redirecting to Stripe Checkout for ${plan}...`,'info');
+  setTimeout(()=>showToast('Stripe payment requires API key configuration','info'),1500);
+}
+
+// ============================================================
+// ADMIN
+// ============================================================
+function initAdmin(){
+  // Admin jobs table
+  const adminJobsEl = document.getElementById('adminJobsTable');
+  if(adminJobsEl){
+    adminJobsEl.innerHTML = allJobs.slice(0,15).map(j=>`<tr>
+      <td style="color:var(--white)">${j.title}</td>
+      <td>${j.company}</td>
+      <td>${j.category}</td>
+      <td><span class="status-badge status-hired">Active</span></td>
+      <td>${timeAgo(j.posted)}</td>
+      <td><div style="display:flex;gap:4px">
+        <button class="btn btn-ghost btn-sm" onclick="showToast('Job featured!','success')">⭐ Feature</button>
+        <button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="showToast('Job deleted','info')">Delete</button>
+      </div></td>
+    </tr>`).join('');
+  }
+  const adminUsersEl = document.getElementById('adminUsersTable');
+  if(adminUsersEl){
+    const users = Array.from({length:10},(_,i)=>({name:`User ${i+1}`,email:`user${i+1}@email.com`,role:i%2===0?'Seeker':'Company',plan:['Free','Pro Seeker','Company Starter','Company Pro'][randomInt(0,3)],joined:`${randomInt(1,30)} days ago`}));
+    adminUsersEl.innerHTML = users.map(u=>`<tr>
+      <td style="color:var(--white)">${u.name}</td>
+      <td>${u.email}</td>
+      <td>${u.role}</td>
+      <td><span class="badge badge-purple">${u.plan}</span></td>
+      <td>${u.joined}</td>
+      <td><div style="display:flex;gap:4px">
+        <button class="btn btn-ghost btn-sm" onclick="showToast('User verified!','success')">✓ Verify</button>
+        <button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="showToast('User banned','info')">Ban</button>
+      </div></td>
+    </tr>`).join('');
+  }
+  const adminRevEl = document.getElementById('adminRevenueTable');
+  if(adminRevEl){
+    adminRevEl.innerHTML = Array.from({length:8},(_,i)=>`<tr>
+      <td style="color:var(--white)">Customer ${i+1}</td>
+      <td>${['Pro Seeker','Company Pro','Company Starter'][randomInt(0,2)]}</td>
+      <td style="color:var(--success)">$${[9.99,29.99,79.99][randomInt(0,2)]}</td>
+      <td><span class="status-badge status-hired">Paid</span></td>
+      <td>${randomInt(1,28)} Mar 2025</td>
+    </tr>`).join('');
+  }
+  const adminCompEl = document.getElementById('adminCompaniesTable');
+  if(adminCompEl){
+    adminCompEl.innerHTML = COMPANIES.slice(0,8).map(c=>`<tr>
+      <td style="color:var(--white)">${c}</td>
+      <td><span class="badge badge-purple">${['Company Pro','Company Starter'][randomInt(0,1)]}</span></td>
+      <td>${randomInt(1,12)}</td>
+      <td><span class="status-badge status-hired">✓ Verified</span></td>
+      <td><button class="btn btn-ghost btn-sm" onclick="showToast('Company managed','info')">Manage</button></td>
+    </tr>`).join('');
+  }
+}
+
+function adminTab(el, tabId){
+  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.admin-panel-content').forEach(p=>p.style.display='none');
+  document.getElementById(tabId).style.display='block';
+}
+
+// ============================================================
+// AUTH MODALS
+// ============================================================
+let otpTimerInterval;
+let currentRegRole = 'seeker';
+
+function switchRegTab(role){
+  currentRegRole=role;
+  document.getElementById('seekerTab').className='tab'+(role==='seeker'?' active':'');
+  document.getElementById('companyTab').className='tab'+(role==='company'?' active':'');
+  document.getElementById('nameLabel').textContent = role==='company'?'Company Name':'Full Name';
+  document.getElementById('companyUrlField').style.display = role==='company'?'block':'none';
+}
+
+function switchLoginTab(tab){
+  document.querySelectorAll('#loginTabs .tab').forEach((t,i)=>t.classList.toggle('active',i===(tab==='email'?0:1)));
+  document.getElementById('emailLoginForm').style.display = tab==='email'?'block':'none';
+  document.getElementById('otpLoginForm').style.display = tab==='otp'?'block':'none';
+}
+
+function sendOTP(){
+  const email = document.getElementById('otpEmail').value;
+  if(!email){showToast('Please enter your email','error');return;}
+  document.getElementById('otpSection').style.display='block';
+  document.getElementById('sendOtpBtn').textContent = '✓ Code Sent — Resend →';
+  showToast('OTP code sent to '+email,'success');
+  startOTPTimer();
+}
+
+function startOTPTimer(){
+  clearInterval(otpTimerInterval);
+  let seconds=600;
+  otpTimerInterval=setInterval(()=>{
+    seconds--;
+    const m=Math.floor(seconds/60);
+    const s=seconds%60;
+    const el=document.getElementById('otpTimer');
+    if(el) el.innerHTML = `Code expires in <strong style="color:var(--electric2)">${m}:${s.toString().padStart(2,'0')}</strong>`;
+    if(seconds<=0){clearInterval(otpTimerInterval);if(el)el.innerHTML='Code expired. <span style="color:var(--electric2);cursor:pointer" onclick="sendOTP()">Resend →</span>';}
+  },1000);
+}
+
+function otpNav(input,index){
+  if(input.value && index<6){
+    const inputs = document.querySelectorAll('.otp-input');
+    if(inputs[index]) inputs[index].focus();
+  }
+}
+
+function verifyOTP(){
+  const inputs = Array.from(document.querySelectorAll('.otp-input')).map(i=>i.value);
+  if(inputs.some(v=>!v)){showToast('Please enter all 6 digits','error');return;}
+  clearInterval(otpTimerInterval);
+  showToast('Login successful! Welcome back 🎉','success');
+  closeModal('loginModal');
+  setTimeout(()=>showPage('seeker-dash'),800);
+}
+
+function handleLogin(){
+  const email = document.getElementById('loginEmail').value;
+  if(!email){showToast('Please enter your email','error');return;}
+  showToast('Logging in...','info');
+  setTimeout(()=>{
+    closeModal('loginModal');
+    showToast('Welcome back! 🎉','success');
+    showPage('seeker-dash');
+  },800);
+}
+
+function handleRegister(){
+  const name = document.getElementById('regName').value;
+  const email = document.getElementById('regEmail').value;
+  const pass = document.getElementById('regPassword').value;
+  if(!name||!email||!pass){showToast('Please fill in all fields','error');return;}
+  showToast('Creating account...','info');
+  setTimeout(()=>{
+    closeModal('registerModal');
+    showToast('Account created! Welcome to ChainWork 🎉','success');
+    showPage(currentRegRole==='company'?'company-dash':'seeker-dash');
+  },800);
+}
+
+function handleHeroSearch(val){
+  // Just visual feedback
+}
+
+function submitJob(){
+  showToast('Job posted successfully! 🚀','success');
+  closeModal('postJobModal');
+  setTimeout(()=>companySection('jobs'),800);
+}
+
+function openPostJobModal(){
+  openModal('postJobModal');
+}
+
+// ============================================================
+// MODAL UTILITIES
+// ============================================================
+function openModal(id){
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(id){
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function closeModalOutside(e,id){
+  if(e.target===document.getElementById(id)) closeModal(id);
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg,type='info'){
+  const icons={success:'✓',error:'✕',info:'ℹ'};
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<span class="toast-icon" style="color:${type==='success'?'var(--success)':type==='error'?'var(--danger)':'var(--electric2)'}">${icons[type]}</span><span class="toast-msg">${msg}</span>`;
+  container.appendChild(toast);
+  setTimeout(()=>{
+    toast.style.animation='fadeOut 0.3s ease forwards';
+    setTimeout(()=>toast.remove(),300);
+  },3500);
+}
+
+// ============================================================
+// MOBILE MENU
+// ============================================================
+function toggleMobileMenu(){
+  const menu = document.getElementById('mobileMenu');
+  menu.classList.toggle('open');
+}
+
+// ============================================================
+// KEYBOARD SHORTCUTS
+// ============================================================
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));
+    document.body.style.overflow='';
+    const mobileMenu = document.getElementById('mobileMenu');
+    if(mobileMenu.classList.contains('open')) mobileMenu.classList.remove('open');
+  }
+});
+
+// INIT
+renderPricingCards();
+</script>
+</body>
+</html>
